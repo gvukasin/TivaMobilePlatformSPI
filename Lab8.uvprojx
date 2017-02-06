@@ -423,11 +423,6 @@
               <FilePath>.\Source\EventCheckers.c</FilePath>
             </File>
             <File>
-              <FileName>TestHarnessService0.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\TestHarnessService0.c</FilePath>
-            </File>
-            <File>
               <FileName>TemplateFSM.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\TemplateFSM.c</FilePath>
@@ -441,6 +436,41 @@
               <FileName>SPI.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\SPI.c</FilePath>
+            </File>
+            <File>
+              <FileName>ADMulti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ADMulti.c</FilePath>
+            </File>
+            <File>
+              <FileName>ADService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ADService.c</FilePath>
+            </File>
+            <File>
+              <FileName>ES_Queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ES_Queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>MotorService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\MotorService.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWMmodule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\PWMmodule.c</FilePath>
+            </File>
+            <File>
+              <FileName>TemplateService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\TemplateService.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -556,6 +586,36 @@
               <FileName>SPI.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\SPI.h</FilePath>
+            </File>
+            <File>
+              <FileName>ADMulti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ADMulti.h</FilePath>
+            </File>
+            <File>
+              <FileName>ADService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ADService.h</FilePath>
+            </File>
+            <File>
+              <FileName>MotorService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\MotorService.h</FilePath>
+            </File>
+            <File>
+              <FileName>PWMmodule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\PWMmodule.h</FilePath>
+            </File>
+            <File>
+              <FileName>TemplateFSM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\TemplateFSM.h</FilePath>
+            </File>
+            <File>
+              <FileName>TemplateService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\TemplateService.h</FilePath>
             </File>
           </Files>
         </Group>
