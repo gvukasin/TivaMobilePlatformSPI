@@ -1,6 +1,6 @@
 /****************************************************************************
  Module
-   SPI.c
+   SPIService.c
 
  Revision
    1.0.1
@@ -55,20 +55,19 @@
 #define BitsPerNibble 4
 
 
-
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service
 */
-static void InitSPI(void);
+static void InitSerialHardware(void);
 
 /*---------------------------- Module Variables ---------------------------*/
-
+static uint8_t MyPriority;
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
  Function
-     InitSPI
+     InitSPIService
 
  Parameters
      void
@@ -83,7 +82,113 @@ static void InitSPI(void);
  Author
      Team 16, 02/04/17, 16:00
 ****************************************************************************/
-void InitSPI ( void )
+bool InitSPIService ( uint8_t Priority )
+{
+	 ES_Event ThisEvent;
+	 MyPriority = Priority;
+	 
+	 // Initialize hardware
+	 InitSerialHardware();
+
+	 // post the initial transition event
+	 ThisEvent.EventType = ES_INIT;
+	 if (ES_PostToService( MyPriority, ThisEvent) == true)
+	 {
+		 return true;
+	 }
+	 else
+	 {
+		 return false;
+	 }
+}
+
+/****************************************************************************
+ Function
+     RunSPIService
+
+ Parameters
+     void
+
+ Returns
+     void
+
+ Description
+     Xmits info
+ Notes
+
+ Author
+     Team 16, 02/04/17, 16:00
+****************************************************************************/
+void RunSPIService ( void )
+{
+	//State machine - idling or Xmitting (class) 
+}
+
+/****************************************************************************
+ Function
+     PostSPIService
+
+ Parameters
+     EF_Event ThisEvent ,the event to post to the queue
+
+ Returns
+		 bool false if the Enqueue operation failed, true otherwise
+
+ Description
+     Posts an event to this state machine's queue
+ Notes
+
+ Author
+     Team 16, 02/04/17, 16:00
+****************************************************************************/
+bool PostSPIService( ES_Event ThisEvent )
+{
+	 return ES_PostToService(MyPriority, ThisEvent);
+}
+
+
+/****************************************************************************
+ Function
+     SPI_InterruptResponse
+
+ Parameters
+     void
+
+ Returns
+     void
+
+ Description
+     Initializes hardware in the Tiva to create an SPI master
+
+ Author
+     Team 16, 02/04/17, 16:00
+****************************************************************************/
+void SPI_InterruptResponse( void )
+{
+	
+}
+
+
+/*----------------------------------------------------------------------------
+private functions
+-----------------------------------------------------------------------------*/
+/****************************************************************************
+ Function
+     InitSerialHardware
+
+ Parameters
+     void
+
+ Returns
+     void
+
+ Description
+     keeps the service init more readable
+
+ Author
+     Team 16, 02/04/17, 16:00
+****************************************************************************/
+static void InitSerialHardware(void)
 {
 	//Enable the clock to the GPIO port
 	HWREG(SYSCTL_RCGCGPIO)|= SYSCTL_RCGCGPIO_R3;
@@ -138,32 +243,7 @@ void InitSPI ( void )
 	// Make sure that the SSI is enabled for operation
 
 	//Enable the NVIC interrupt for the SSI when starting to transmit
-	
 }
-
-/****************************************************************************
- Function
-     SPIISR
-
- Parameters
-     void
-
- Returns
-     void
-
- Description
-     Initializes hardware in the Tiva to create an SPI master
- Notes
-
- Author
-     Team 16, 02/04/17, 16:00
-****************************************************************************/
-void SPIISR( void )
-{
-	
-}
-
-
 
 /*------------------------------- Footnotes -------------------------------*/
 /*------------------------------ End of file ------------------------------*/

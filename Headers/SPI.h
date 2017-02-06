@@ -12,7 +12,10 @@
 #include "ES_Types.h"
 
 // Public Function Prototypes
-
+bool InitSPIService ( uint8_t Priority );
+void RunSPIService( void );
+bool PostSPIService( ES_Event ThisEvent );
+void SPI_InterruptResponse( void );
 
 #endif /* SPI_H */
 
