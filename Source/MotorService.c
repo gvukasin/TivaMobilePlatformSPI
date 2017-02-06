@@ -73,7 +73,7 @@ static uint8_t DutyCycle;
  Author
      Elena Galbally
 ****************************************************************************/
- bool InitializeMotor (uint8_t Priority)
+ bool InitializeMotorService (uint8_t Priority)
  { 
 	//printf("\rLittle man in motor init\n");
 	 
@@ -114,7 +114,7 @@ static uint8_t DutyCycle;
  Author
      Elena Galbally
 ****************************************************************************/
-bool PostMotor(ES_Event ThisEvent)
+bool PostMotorService(ES_Event ThisEvent)
 {
   return ES_PostToService( MyPriority, ThisEvent);
 }
@@ -136,7 +136,7 @@ bool PostMotor(ES_Event ThisEvent)
  Author
    Elena Galbally
 ****************************************************************************/
-ES_Event RunMotor(ES_Event ThisEvent)
+ES_Event RunMotorService(ES_Event ThisEvent)
 {
   ES_Event ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors

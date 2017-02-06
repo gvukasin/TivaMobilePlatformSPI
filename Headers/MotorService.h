@@ -14,8 +14,8 @@
 #include "ES_Events.h" 
 
 // Public Function Prototypes
-bool InitializeMotor(uint8_t Priority);
-bool PostMotor(ES_Event ThisEvent);
-ES_Event RunMotor(ES_Event ThisEvent);	
+bool InitializeMotorService(uint8_t Priority);
+bool PostMotorService(ES_Event ThisEvent);
+ES_Event RunMotorService(ES_Event ThisEvent);	
 
 #endif /* MotorService_H */
