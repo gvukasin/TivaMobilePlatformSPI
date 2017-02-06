@@ -50,6 +50,7 @@
 
 // SSI Module definition
 #define SSIModule BIT1HI
+#define SSI_NVIC_HI BIT7HI
 
 // defining ALL_BITS
 #define ALL_BITS (0xff<<2)
@@ -193,58 +194,56 @@ private functions
 static void InitSerialHardware(void)
 {
 	//Enable the clock to the GPIO port
-	HWREG(SYSCTL_RCGCGPIO)|= SYSCTL_RCGCGPIO_R3;
-		
+	HWREG(SYSCTL_RCGCGPIO)|= SYSCTL_RCGCGPIO_R3;		
 	// Enable the clock to SSI module
-	HWREG(SYSCTL_RCGCSSI) = SSIModule;
-		
+	HWREG(SYSCTL_RCGCSSI) = SSIModule;		
 	// Wait for the GPIO port to be ready
-	while((HWREG(SYSCTL_RCGCGPIO)& SYSCTL_PRGPIO_R3) != SYSCTL_PRGPIO_R3){};
+	while((HWREG(SYSCTL_RCGCGPIO) & SYSCTL_PRGPIO_R3) != SYSCTL_PRGPIO_R3){};
 		
 	// Program the GPIO to use the alternate functions on the SSI pins
-	HWREG(GPIO_PORTD_BASE+GPIO_O_AFSEL) |= (RXPIN|TXPIN|SPIClock|SlaveSelect);	
+	HWREG(GPIO_PORTD_BASE + GPIO_O_AFSEL) |= (RXPIN|TXPIN|SPIClock|SlaveSelect);	
 		
-	// Set mux position in GPIOPCTL to select the SSI use of the pins 
+	// Set mux position in GPIOPCTL to select the SSI use of the pins:
 	// map bit RXPIN's alt function to SSI1Rx (2), by clearing nibble then shifting 2 to 2nd nibble 
-	HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) & 0xfffff0ff) + (2<<(2*BitsPerNibble));
-		
+	HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) & 0xfffff0ff) + (2<<(2*BitsPerNibble));		
 	// map bit TXPIN's alt function to SSI1Tx (2), by clearing nibble then shifting 2 to 3rd nibble 
-	HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) & 0xffff0fff) + (2<<(3*BitsPerNibble));
-		
+	HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) & 0xffff0fff) + (2<<(3*BitsPerNibble));		
 	// map bit SPIClock's alt function to SSI1Clk (2), by clearing nibble then shifting 2 to 0th nibble 
-	HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) & 0xfffffff0) + (2);
-	
+	HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) & 0xfffffff0) + (2);	
 	// map bit SlaveSelect's alt function to SSI1Fss (2), by clearing nibble then shifting 2 to 1st nibble 
-	HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE+GPIO_O_PCTL) & 0xffffff0f) + (2<<(BitsPerNibble));		
+	HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) = (HWREG(GPIO_PORTD_BASE + GPIO_O_PCTL) & 0xffffff0f) + (2<<(BitsPerNibble));		
 		
 	// Program the port lines for digital I/O
-	HWREG(GPIO_PORTD_BASE+GPIO_O_DEN)|= (RXPIN|TXPIN|SPIClock|SlaveSelect);
-
+	HWREG(GPIO_PORTD_BASE + GPIO_O_DEN)|= (RXPIN|TXPIN|SPIClock|SlaveSelect);
 	// Program the required data directions on the port lines
-	HWREG(GPIO_PORTD_BASE+GPIO_O_DIR)|= (RXPIN|TXPIN|SPIClock|SlaveSelect);
+	HWREG(GPIO_PORTD_BASE + GPIO_O_DIR)|= (RXPIN|TXPIN|SPIClock|SlaveSelect);
 		
 	// If using SPI mode 3, program the pull-up on the clock line
-	
-		
-	// Wait for the SSI1 to be ready
-	
-		
+	HWREG(GPIO_PORTD_BASE + GPIO_O_PUR) |= SPIClock;		
+	// Wait for the SSI0 to be ready
+	while ((HWREG(SYSCTL_RCGCSSI)& SYSCTL_RCGCSSI_R0)!= SYSCTL_RCGCSSI_R0);		
 	// Make sure that the SSI is disabled before programming mode bits
-		
+	HWREG(SSI1_BASE + SSI_O_CR1) &= (~SSI_CR1_SSE);	
 	// Select master mode (MS) & TXRIS indicating End of Transmit (EOT)
-
+	HWREG(SSI1_BASE + SSI_O_CR1) &= (~SSI_CR1_MS);
+	HWREG(SSI1_BASE + SSI_O_CR1) &= SSI_CR1_EOT;
+	
 	// Configure the SSI clock source to the system clock
-	HWREG(SSI1_BASE+SSI_O_CC) = 0; 
-
+	HWREG(SSI1_BASE + SSI_O_CC) = SSI_CC_CS_SYSPLL; 
 	// Configure the clock pre-scaler
 
 	// Configure clock rate (SCR), phase & polarity (SPH, SPO), mode (FRF),data size (DSS)
-	
-	// Locally enable interrupts (TXIM in SSIIM)
 
+
+	// Locally enable interrupts (TXIM in SSIIM) 
+	//unmasking -tiva DS pg.977
+	HWREG(SSI1_BASE + SSI_O_IM) |= SSI_IM_TXIM;
 	// Make sure that the SSI is enabled for operation
+	HWREG(SSI1_BASE + SSI_O_CR1) |= SSI_CR1_SSE;
 
 	//Enable the NVIC interrupt for the SSI when starting to transmit
+	//Interrupt number -tiva DS pg.104
+	HWREG(NVIC_EN0) |= SSI_NVIC_HI;
 }
 
 /*------------------------------- Footnotes -------------------------------*/
