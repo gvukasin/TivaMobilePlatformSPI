@@ -35,6 +35,8 @@
 #include "BITDEFS.H"
 #include "inc/hw_ssi.h"
 
+#include "SPI.h"
+
 // to print comments to the terminal
 #include <stdio.h>
 #include "termio.h" 
