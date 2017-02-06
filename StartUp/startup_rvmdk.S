@@ -82,6 +82,7 @@ __heap_limit
         EXTERN  ShortTimerAHandler
         EXTERN  ShortTimerBHandler
 ;        EXTERN  UARTStdioIntHandler
+		EXTERN	SPI_InterruptResponse
 
 ;******************************************************************************
 ;
