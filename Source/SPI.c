@@ -1,6 +1,7 @@
 /****************************************************************************
  Module
    SPIService.c
+   SPI.c
 
  Revision
    1.0.1
@@ -43,14 +44,24 @@
 
 /*----------------------------- Module Defines ----------------------------*/
 // pin definitions
-#define RXPIN BIT2HI
-#define TXPIN BIT3HI
-#define SPIClock BIT0HI
-#define SlaveSelect BIT1HI
+#define RXPIN BIT4HI
+#define TXPIN BIT5HI
+#define SPIClock BIT2HI
+#define SlaveSelect BIT3HI
 
 // SSI Module definition
+<<<<<<< .merge_file_a07252
 #define SSIModule BIT1HI
 #define SSI_NVIC_HI BIT7HI
+=======
+#define SSIModule BIT0HI
+
+// CPSR divisor for SSI clock rate
+#define CPSDVSR 2
+
+// SCR divisor for SSI clock rate
+#define SCR 0
+>>>>>>> .merge_file_a03952
 
 // defining ALL_BITS
 #define ALL_BITS (0xff<<2)
@@ -63,9 +74,16 @@
    relevant to the behavior of this service
 */
 static void InitSerialHardware(void);
+static void WriteSPI(uint8_t);
 
 /*---------------------------- Module Variables ---------------------------*/
 static uint8_t MyPriority;
+
+// received data from data register
+static uint8_t ReceivedData;
+
+// data to write to data register
+static uint8_t LastChunk;
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
@@ -168,6 +186,12 @@ bool PostSPIService( ES_Event ThisEvent )
 ****************************************************************************/
 void SPI_InterruptResponse( void )
 {
+	// clear interrupt
+	
+	// read command (FIX:I don't think this is how you read from this register)
+	//ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
+	
+	// post command to motor service?
 	
 }
 
@@ -194,6 +218,7 @@ private functions
 static void InitSerialHardware(void)
 {
 	//Enable the clock to the GPIO port
+<<<<<<< .merge_file_a07252
 	HWREG(SYSCTL_RCGCGPIO)|= SYSCTL_RCGCGPIO_R3;		
 	// Enable the clock to SSI module
 	HWREG(SYSCTL_RCGCSSI) = SSIModule;		
@@ -233,17 +258,115 @@ static void InitSerialHardware(void)
 	// Configure the clock pre-scaler
 
 	// Configure clock rate (SCR), phase & polarity (SPH, SPO), mode (FRF),data size (DSS)
+=======
+	HWREG(SYSCTL_RCGCGPIO)|= SYSCTL_RCGCGPIO_R0;
+		
+	// Enable the clock to SSI module
+	HWREG(SYSCTL_RCGCSSI) |= SSIModule;
+		
+	// Wait for the GPIO port to be ready
+	while((HWREG(SYSCTL_RCGCGPIO)& SYSCTL_PRGPIO_R0) != SYSCTL_PRGPIO_R0){};
+		
+	// Program the GPIO to use the alternate functions on the SSI pins
+	HWREG(GPIO_PORTA_BASE+GPIO_O_AFSEL) |= (RXPIN|TXPIN|SPIClock|SlaveSelect);	
+		
+	// Set mux position in GPIOPCTL to select the SSI use of the pins 
+	// map bit RXPIN's alt function to SSI0Rx (2), by clearing nibble then shifting 2 to 4th nibble 
+	HWREG(GPIO_PORTA_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTA_BASE+GPIO_O_PCTL) & 0xfff0ffff) + (2<<(4*BitsPerNibble));
+		
+	// map bit TXPIN's alt function to SSI0Tx (2), by clearing nibble then shifting 2 to 5th nibble 
+	HWREG(GPIO_PORTA_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTA_BASE+GPIO_O_PCTL) & 0xff0fffff) + (2<<(5*BitsPerNibble));
+		
+	// map bit SPIClock's alt function to SSI0Clk (2), by clearing nibble then shifting 2 to 2nd nibble 
+	HWREG(GPIO_PORTA_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTA_BASE+GPIO_O_PCTL) & 0xfffff0ff) + (2<<(2*BitsPerNibble));
+	
+	// map bit SlaveSelect's alt function to SSI0Fss (2), by clearing nibble then shifting 2 to 3rd nibble 
+	HWREG(GPIO_PORTA_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTA_BASE+GPIO_O_PCTL) & 0xffff0fff) + (2<<(3*BitsPerNibble));		
+		
+	// Program the port lines for digital I/O
+	HWREG(GPIO_PORTA_BASE+GPIO_O_DEN)|= (RXPIN|TXPIN|SPIClock|SlaveSelect);
+
+	// Program the required data directions on the port lines
+	HWREG(GPIO_PORTA_BASE+GPIO_O_DIR)|= (RXPIN|TXPIN|SPIClock|SlaveSelect);
+		
+	// If using SPI mode 3, program the pull-up on the clock line and slave select line
+	HWREG(GPIO_PORTA_BASE+GPIO_O_PUR) |= (SPIClock|SlaveSelect);
+		
+		// Wait for the SSI0 to be ready (FIX: need something like a peripheral ready to check)
+	//while((HWREG(SYSCTL_RCGCSSI)& ) != ){};
+	
+	// Make sure that the SSI is disabled before programming mode bits
+	HWREG(SSI0_BASE+SSI_O_CR1) &= (~SSI_CR1_SSE);
+		
+	// Select master mode (MS) & TXRIS indicating End of Transmit (EOT)
+	HWREG(SSI0_BASE+SSI_O_CR1) &= (~SSI_CR1_MS);
+	HWREG(SSI0_BASE+SSI_O_CR1) |= SSI_CR1_EOT;
+
+	// Configure the SSI clock source to the system clock
+	HWREG(SSI0_BASE+SSI_O_CC) = SSI_CC_CS_SYSPLL; 
+
+	// Configure the clock pre-scaler (FIX: set CPSDVSR)
+	HWREG(SSI0_BASE+SSI_O_CPSR) = CPSDVSR;
+
+	// Configure clock rate (SCR) by clearing with a mask and then shifting SCR two nibbles (FIX: set SCR)
+	HWREG(SSI0_BASE+SSI_O_CR0) = (HWREG(SSI0_BASE+SSI_O_CR0) & 0xffff00ff)+(SCR<<(2*BitsPerNibble));
+	
+	// Configure phase & polarity (SPH, SPO), data size (DSS)
+	HWREG(SSI0_BASE+SSI_O_CR0) |= (SSI_CR0_SPH |SSI_CR0_SPO|SSI_CR0_DSS_8);
+	
+	// Configure mode(FRR) using mask to select Freescale SPI Frame Format as FRF mode by clearing
+	HWREG(SSI0_BASE+SSI_O_CR0) &= (~SSI_CR0_FRF_M);
+	
+	// Locally enable interrupts (TXIM in SSIIM)
+	//HWREG(SSI0_BASE+SSI_O_IM) |= SSI_IM_RXIM;
+	// Do we want to enable rx not tx? do we want to enable receive overrun? 
+	HWREG(SSI0_BASE+SSI_O_IM) |= SSI_IM_TXIM;
+>>>>>>> .merge_file_a03952
 
 
 	// Locally enable interrupts (TXIM in SSIIM) 
 	//unmasking -tiva DS pg.977
 	HWREG(SSI1_BASE + SSI_O_IM) |= SSI_IM_TXIM;
 	// Make sure that the SSI is enabled for operation
+<<<<<<< .merge_file_a07252
 	HWREG(SSI1_BASE + SSI_O_CR1) |= SSI_CR1_SSE;
 
 	//Enable the NVIC interrupt for the SSI when starting to transmit
 	//Interrupt number -tiva DS pg.104
 	HWREG(NVIC_EN0) |= SSI_NVIC_HI;
+=======
+	HWREG(SSI0_BASE+SSI_O_CR1) |= SSI_CR1_SSE;
+
+//Enable the NVIC interrupt for the SSI when starting to transmit (FIX: should we put this somewhere else because it will create an infinite loop until 
+// data is transmitted)
+}
+
+/****************************************************************************
+ Function
+     WriteSPI
+
+ Parameters
+     8 bits to write to data register
+
+ Returns
+     void
+
+ Description
+     writes 8 bits on Tx line 
+
+ Author
+     Team 16, 02/04/17, 23:00
+****************************************************************************/
+void WriteSPI(uint8_t DataToWrite)
+{
+	//Enable the NVIC interrupt for the SSI (FIX:how to do this?)
+		
+	// write to data register
+	HWREG(SSI0_BASE+SSI_O_DR) = DataToWrite;
+	
+	// keep track of last 8 bits written 
+	LastChunk = DataToWrite;
+>>>>>>> .merge_file_a03952
 }
 
 /*------------------------------- Footnotes -------------------------------*/
