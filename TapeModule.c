@@ -1,6 +1,11 @@
 /****************************************************************************
-Tape Module
+Things remian to be modified:
+Uncomment the POST statements
 
+
+Tape Module
+	Define the Initialization and ISR for the tape sensing interrupt
+	Whenever tape is detected, post event TapeDetected
  
 Events to receive:
 
@@ -90,7 +95,6 @@ void InitTapeInterrupt (void){
      TapeInterruptResponse
  Description
      Define the interrupt response routine
-     Calculate the interval between two encoder signal edges
 ****************************************************************************/
 void TapeInterruptResponse(void){
 	uint32_t ThisCapture;
