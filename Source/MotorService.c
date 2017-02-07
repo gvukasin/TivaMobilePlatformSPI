@@ -76,7 +76,8 @@ static uint8_t DutyCycle;
  bool InitializeMotorService (uint8_t Priority)
  { 
 	//printf("\rLittle man in motor init\n");
-	 
+	
+	 //trying github
  	ES_Event ThisEvent;
  	MyPriority = Priority;
 	 
