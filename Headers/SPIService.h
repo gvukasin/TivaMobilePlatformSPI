@@ -10,6 +10,11 @@
 #include "ES_Types.h"
 #include "ES_Events.h" 
 
+
+// typedefs for the states
+// State definitions for use with the query function
+typedef enum {Idling,Busy} SPIState_t ;
+
 // Public Function Prototypes
 bool InitSPIService ( uint8_t );
 ES_Event RunSPIService( ES_Event );
