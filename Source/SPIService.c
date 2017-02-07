@@ -33,11 +33,10 @@
 #include "driverlib/pin_map.h"	// Define PART_TM4C123GH6PM in project
 #include "driverlib/gpio.h"
 #include "inc/hw_nvic.h"
-#include "SPI.h"
 #include "BITDEFS.H"
 #include "inc/hw_ssi.h"
 
-#include "SPI.h"
+#include "SPIService.h"
 
 // to print comments to the terminal
 #include <stdio.h>
@@ -179,11 +178,13 @@ bool PostSPIService( ES_Event ThisEvent )
 void SPI_InterruptResponse( void )
 {
 	// clear interrupt
+	HWREG(SSI0_BASE + SSI_O_IM) &= (~SSI_IM_TXIM);
 	
 	// read command (FIX:I don't think this is how you read from this register)
-	//ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
+	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
 	
-	// post command to motor service?
+	// post command to action service
+	
 	
 }
 
@@ -205,7 +206,8 @@ void SPI_InterruptResponse( void )
 ****************************************************************************/
 void WriteSPI(uint8_t DataToWrite)
 {
-	//Enable the NVIC interrupt for the SSI (FIX:how to do this?)
+	//Enable the NVIC interrupt for the SSI
+	HWREG(SSI0_BASE + SSI_O_IM) |= SSI_IM_TXIM;
 		
 	// write to data register
 	HWREG(SSI0_BASE+SSI_O_DR) = DataToWrite;
