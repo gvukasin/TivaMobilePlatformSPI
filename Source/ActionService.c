@@ -44,6 +44,18 @@
 #define ALL_BITS (0xff<<2)
 #define TEST_MODE
 
+#define 0x00 STOP
+#define 0x02 CW_90
+#define 0x03 CW_45
+#define 0x04 CCW_90
+#define 0x05 CCW_45
+#define 0x08 FORWARD_HALF_SPEED
+#define 0x09 FORWARD_FULL_SPEED
+#define 0x10 REVERSE_HALF_SPEED
+#define 0x11 REVERSE_FULL_SPEED
+#define 0x20 ALIGN_BEACON
+#define 0x40 DRIVE2TAPE
+
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service*/
