@@ -75,7 +75,6 @@ bool Check4Lock(void)
     ThisEvent.EventParam = 1;
     // this could be any of the service post function, ES_PostListx or 
     // ES_PostAll functions
-    ES_PostList01(ThisEvent); 
     ReturnVal = true;
   }
   LastPinState = CurrentPinState; // update the state for next time
@@ -114,9 +113,9 @@ bool Check4Keystroke(void)
     // test distribution list functionality by sending the 'L' key out via
     // a distribution list.
     if ( ThisEvent.EventParam == 'L'){
-      ES_PostList00( ThisEvent );
+     
     }else{   // otherwise post to Service 0 for processing
-      PostTestHarnessService0( ThisEvent );
+   
     }
     return true;
   }

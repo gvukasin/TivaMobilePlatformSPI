@@ -11,10 +11,10 @@
 #include "ES_Events.h" 
 
 // Public Function Prototypes
-bool InitSPIService ( uint8_t Priority );
-void RunSPIService( void );
-bool PostSPIService( ES_Event ThisEvent );
-void SPI_InterruptResponse( void );
+bool InitSPIService ( uint8_t );
+ES_Event RunSPIService( ES_Event );
+bool PostSPIService( ES_Event );
+void WriteSPI( uint8_t );
 
 #endif /* SPI_H */
 
