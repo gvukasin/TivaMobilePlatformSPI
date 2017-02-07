@@ -36,7 +36,7 @@
 #include "BITDEFS.H"
 #include "inc/hw_ssi.h"
 #include "SPIService.h"
-#include "ES_DeferRecall.h"
+#include "ActionService.h"
 
 // to print comments to the terminal
 #include <stdio.h>
@@ -61,8 +61,8 @@
 // SCR divisor for SSI clock rate
 #define SCR 0
 
-// query to Command Generator
-#define QueryBits 0xAA
+// querry to Command Generator
+#define QuerryBits 0xAA
 
 // defining ALL_BITS
 #define ALL_BITS (0xff<<2)
@@ -79,9 +79,6 @@ void QuerySPI( void );
 
 /*---------------------------- Module Variables ---------------------------*/
 static uint8_t MyPriority;
-
-// add a deferral queue for up to 3 pending deferrals +1 to allow for ovehead
-static ES_Event DeferralQueue[3+1];
 
 // current state of SPI state machine
 static SPIState_t CurrentState;
@@ -113,15 +110,10 @@ static uint8_t LastChunk;
 bool InitSPIService ( uint8_t Priority )
 {
 	 ES_Event ThisEvent;
-	
-	// set priority
 	 MyPriority = Priority;
-	
-	// initialize deferral queue for testing Deferal function
-  ES_InitDeferralQueueWith( DeferralQueue, ARRAY_SIZE(DeferralQueue) );
 	 
-	// Initialize hardware
-	InitSerialHardware();
+	 // Initialize hardware
+	 InitSerialHardware();
 
 	// return true
 	return true;
@@ -211,12 +203,9 @@ void SPI_InterruptResponse( void )
 	// read command (FIX:I don't think this is how you read from this register)
 	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
 	
-	// Change state to Idling
-	CurrentState = Idling;
-	
 	// post command to action service
 	PostActionService(ReceivedData);
-
+	
 }
 
 /****************************************************************************
@@ -237,17 +226,14 @@ void SPI_InterruptResponse( void )
 ****************************************************************************/
 void QuerySPI( void )
 {
-	// Current State is Busy 
-	CurrentState = Busy;
-	
 	//Enable the NVIC interrupt for the SSI
 	HWREG(SSI0_BASE + SSI_O_IM) |= SSI_IM_TXIM;
 		
 	// write to data register
-	HWREG(SSI0_BASE+SSI_O_DR) = QueryBits;
+	HWREG(SSI0_BASE+SSI_O_DR) = DataToWrite;
 	
 	// keep track of last 8 bits written 
-	LastChunk = QueryBits;
+	LastChunk = DataToWrite;
 }
 
 /*----------------------------------------------------------------------------
@@ -271,6 +257,7 @@ private functions
 ****************************************************************************/
 static void InitSerialHardware(void)
 {
+	printf("\r\n Starting init \r\n");
 	//Enable the clock to the GPIO port
 	HWREG(SYSCTL_RCGCGPIO)|= SYSCTL_RCGCGPIO_R0;		
 	
@@ -340,6 +327,7 @@ static void InitSerialHardware(void)
 	//Enable the NVIC interrupt for the SSI when starting to transmit
 	//Interrupt number -tiva DS pg.104
 	HWREG(NVIC_EN0) |= SSI_NVIC_HI;
+	
 	printf("Got thru init");
 }
 
