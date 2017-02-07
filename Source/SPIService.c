@@ -35,7 +35,6 @@
 #include "inc/hw_nvic.h"
 #include "BITDEFS.H"
 #include "inc/hw_ssi.h"
-
 #include "SPIService.h"
 
 // to print comments to the terminal
@@ -61,6 +60,9 @@
 // SCR divisor for SSI clock rate
 #define SCR 0
 
+// querry to Command Generator
+#define QuerryBits 0xAA
+
 // defining ALL_BITS
 #define ALL_BITS (0xff<<2)
 
@@ -72,9 +74,13 @@
    relevant to the behavior of this service
 */
 static void InitSerialHardware(void);
+void QuerySPI( void );
 
 /*---------------------------- Module Variables ---------------------------*/
 static uint8_t MyPriority;
+
+// current state of SPI state machine
+static SPIState_t CurrentState;
 
 // received data from data register
 static uint8_t ReceivedData;
@@ -131,8 +137,21 @@ bool InitSPIService ( uint8_t Priority )
 ****************************************************************************/
 ES_Event RunSPIService ( ES_Event ThisEvent )
 {
-	//State machine - idling or Xmitting (class) 
+	// Idling State
+	if(CurrentState == Idling){
+		
+		// change state to Busy
+		CurrentState = Busy;
+		
+		// query the Command Generator
+		QuerySPI();
 	
+	// Busy State
+	} else if(CurrentState == Busy) {
+		
+		// defer this event to deferral queue
+		
+	}
 	return ThisEvent;
 }
 
@@ -184,13 +203,13 @@ void SPI_InterruptResponse( void )
 	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
 	
 	// post command to action service
-	
+	PostActionService(ReceivedData);
 	
 }
 
 /****************************************************************************
  Function
-     WriteSPI
+     QuerySPI
 
  Parameters
      8 bits to write to data register
@@ -204,7 +223,7 @@ void SPI_InterruptResponse( void )
  Author
      Team 16, 02/04/17, 23:00
 ****************************************************************************/
-void WriteSPI(uint8_t DataToWrite)
+void QuerySPI( void )
 {
 	//Enable the NVIC interrupt for the SSI
 	HWREG(SSI0_BASE + SSI_O_IM) |= SSI_IM_TXIM;
