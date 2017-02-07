@@ -62,7 +62,7 @@
 #define SCR 0
 
 // querry to Command Generator
-#define QuerryBits 0xAA
+#define QueryBits 0xAA
 
 // defining ALL_BITS
 #define ALL_BITS (0xff<<2)
@@ -88,6 +88,9 @@ static uint8_t ReceivedData;
 
 // data to write to data register
 static uint8_t LastChunk;
+
+// ISR event
+static ES_Event ISREvent;
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
@@ -146,13 +149,7 @@ ES_Event RunSPIService ( ES_Event ThisEvent )
 		
 		// query the Command Generator
 		QuerySPI();
-	
-	// Busy State
-	} else if(CurrentState == Busy) {
-		
-		// defer this event to deferral queue
-		
-	}
+	} 
 	return ThisEvent;
 }
 
@@ -204,8 +201,8 @@ void SPI_InterruptResponse( void )
 	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
 	
 	// post command to action service
-	PostActionService(ReceivedData);
-	
+	ISREvent.EventType = ReceivedData;
+	PostActionService(ISREvent);
 }
 
 /****************************************************************************
@@ -226,14 +223,18 @@ void SPI_InterruptResponse( void )
 ****************************************************************************/
 void QuerySPI( void )
 {
+	
+	// change state to busy 
+	CurrentState = Busy;
+	
 	//Enable the NVIC interrupt for the SSI
 	HWREG(SSI0_BASE + SSI_O_IM) |= SSI_IM_TXIM;
 		
 	// write to data register
-	HWREG(SSI0_BASE+SSI_O_DR) = DataToWrite;
+	HWREG(SSI0_BASE+SSI_O_DR) = QueryBits;
 	
 	// keep track of last 8 bits written 
-	LastChunk = DataToWrite;
+	LastChunk = QueryBits;
 }
 
 /*----------------------------------------------------------------------------
