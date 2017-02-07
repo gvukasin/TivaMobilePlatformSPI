@@ -433,11 +433,6 @@
               <FilePath>.\Source\ES_ShortTimer.c</FilePath>
             </File>
             <File>
-              <FileName>SPI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\SPI.c</FilePath>
-            </File>
-            <File>
               <FileName>ADMulti.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ADMulti.c</FilePath>
@@ -471,6 +466,11 @@
               <FileName>TemplateService.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\TemplateService.c</FilePath>
+            </File>
+            <File>
+              <FileName>SPIService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\SPIService.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -583,11 +583,6 @@
               <FilePath>.\Headers\ES_ShortTimer.h</FilePath>
             </File>
             <File>
-              <FileName>SPI.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\SPI.h</FilePath>
-            </File>
-            <File>
               <FileName>ADMulti.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ADMulti.h</FilePath>
@@ -616,6 +611,11 @@
               <FileName>TemplateService.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\TemplateService.h</FilePath>
+            </File>
+            <File>
+              <FileName>SPIService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\SPIService.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1231,11 +1231,6 @@
               <FilePath>.\Source\ES_ShortTimer.c</FilePath>
             </File>
             <File>
-              <FileName>SPI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\SPI.c</FilePath>
-            </File>
-            <File>
               <FileName>ADMulti.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ADMulti.c</FilePath>
@@ -1442,6 +1437,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\TemplateService.c</FilePath>
             </File>
+            <File>
+              <FileName>SPIService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\SPIService.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1553,11 +1553,6 @@
               <FilePath>.\Headers\ES_ShortTimer.h</FilePath>
             </File>
             <File>
-              <FileName>SPI.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\SPI.h</FilePath>
-            </File>
-            <File>
               <FileName>ADMulti.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ADMulti.h</FilePath>
@@ -1586,6 +1581,11 @@
               <FileName>TemplateService.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\TemplateService.h</FilePath>
+            </File>
+            <File>
+              <FileName>SPIService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\SPIService.h</FilePath>
             </File>
           </Files>
         </Group>

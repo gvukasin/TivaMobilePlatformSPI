@@ -35,7 +35,6 @@
 #include "inc/hw_nvic.h"
 #include "BITDEFS.H"
 #include "inc/hw_ssi.h"
-
 #include "SPIService.h"
 
 // to print comments to the terminal
@@ -60,6 +59,9 @@
 
 // SCR divisor for SSI clock rate
 #define SCR 0
+
+// querry to Command Generator
+#define QuerryBits 0xAA
 
 // defining ALL_BITS
 #define ALL_BITS (0xff<<2)
@@ -137,9 +139,17 @@ ES_Event RunSPIService ( ES_Event ThisEvent )
 {
 	// Idling State
 	if(CurrentState == Idling){
-		QuerySPI();
 		
+		// change state to Busy
+		CurrentState = Busy;
+		
+		// query the Command Generator
+		QuerySPI();
+	
+	// Busy State
 	} else if(CurrentState == Busy) {
+		
+		// defer this event to deferral queue
 		
 	}
 	return ThisEvent;
