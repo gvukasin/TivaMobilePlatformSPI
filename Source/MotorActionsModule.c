@@ -41,7 +41,9 @@
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service*/
-
+void rotate(uint16_t dutyCycle, int angle, bool direction);
+void drive(uint16_t dutyCycle, int speed, bool direction);
+void stop(void);
 
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
