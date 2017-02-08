@@ -14,7 +14,7 @@
 #include "ES_Framework.h"
 #include "ADService.h"
 #include "ADMulti.h"
-#include "MotorService.h"
+#include "PWMmodule.h"
 
 #include <stdio.h>
 #include <termio.h>
@@ -89,7 +89,7 @@ static uint16_t DutyCycle;
 	 ADC_MultiInit(NUM_ADCHANNELS_USED); 
 	 
 	 // initialize timer for 10ms timeout condition
-	 ES_Timer_InitTimer(ADTimer, AD_TIMER_MS);
+	 //ES_Timer_InitTimer(ADTimer, AD_TIMER_MS);
  
 	 // post the initial transition event
  	 ThisEvent.EventType = ES_INIT;
@@ -147,7 +147,7 @@ ES_Event RunAD(ES_Event ThisEvent)
 	ES_Event ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
 	
-	if((ThisEvent.EventType == ES_TIMEOUT) && (ThisEvent.EventParam == ADTimer))
+	if((ThisEvent.EventType == ES_TIMEOUT)))
 	{
 		// Read AD pin
 		ADC_MultiRead(ADResult);
@@ -157,7 +157,7 @@ ES_Event RunAD(ES_Event ThisEvent)
 		DutyCycle = ((MAX_DUTY_CYCLE - MIN_DUTY_CYCLE)*PotValue + (MIN_DUTY_CYCLE*MAX_POT_VALUE)) / MAX_POT_VALUE;
 		
 		// Reset timer
-		ES_Timer_InitTimer(ADTimer, AD_TIMER_MS);	
+		//ES_Timer_InitTimer(ADTimer, AD_TIMER_MS);	
 	}
 	
 	return ReturnEvent;

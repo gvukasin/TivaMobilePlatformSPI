@@ -22,7 +22,7 @@
 /*----------------------------- Include Files -----------------------------*/
 /* include header files for the framework and this service
 */
-#define TEST
+//#define TEST
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "inc/hw_memmap.h"
@@ -55,11 +55,11 @@
 #define SSIModule BIT0HI
 #define SSI_NVIC_HI BIT7HI
 
-// CPSR divisor for SSI clock rate
-#define CPSDVSR 2
+// CPSR divisor for SSI clock rate (2)
+#define CPSDVSR 0x02
 
-// SCR divisor for SSI clock rate
-#define SCR 0
+// SCR divisor for SSI clock rate (24)
+#define SCR 0x18
 
 // querry to Command Generator
 #define QueryBits 0xAA
@@ -141,6 +141,7 @@ bool InitSPIService ( uint8_t Priority )
 ****************************************************************************/
 ES_Event RunSPIService ( ES_Event ThisEvent )
 {
+	ThisEvent.EventType = ES_NO_EVENT;
 	// Idling State
 	if(CurrentState == Idling){
 		
@@ -194,15 +195,20 @@ bool PostSPIService( ES_Event ThisEvent )
 ****************************************************************************/
 void SPI_InterruptResponse( void )
 {
+	
+	
 	// clear interrupt
 	HWREG(SSI0_BASE + SSI_O_IM) &= (~SSI_IM_TXIM);
-	
-	// read command (FIX:I don't think this is how you read from this register)
+
+	// read command 
 	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
+
 	
 	// post command to action service
 	ISREvent.EventType = ReceivedData;
-	PostActionService(ISREvent);
+	//PostActionService(ISREvent);
+	
+	CurrentState=Idling;
 }
 
 /****************************************************************************
@@ -226,15 +232,16 @@ void QuerySPI( void )
 	
 	// change state to busy 
 	CurrentState = Busy;
-	
+	printf("\r\n In Query \r\n");
 	//Enable the NVIC interrupt for the SSI
 	HWREG(SSI0_BASE + SSI_O_IM) |= SSI_IM_TXIM;
-		
+	printf("\r\n Set interrupt \r\n");
 	// write to data register
 	HWREG(SSI0_BASE+SSI_O_DR) = QueryBits;
+	//printf("\r\n Query: %x \r\n", QueryBits);
 	
 	// keep track of last 8 bits written 
-	LastChunk = QueryBits;
+	//LastChunk = QueryBits;
 }
 
 /*----------------------------------------------------------------------------
@@ -290,8 +297,8 @@ static void InitSerialHardware(void)
 	// Program the required data directions on the port lines
 	HWREG(GPIO_PORTA_BASE + GPIO_O_DIR)|= (RXPIN|TXPIN|SPIClock|SlaveSelect);
 		
-	// If using SPI mode 3, program the pull-up on the clock line (and slave select line ???)
-	HWREG(GPIO_PORTA_BASE + GPIO_O_PUR) |= (SPIClock|SlaveSelect);		
+	// If using SPI mode 3, program the pull-up on the clock line
+	HWREG(GPIO_PORTA_BASE + GPIO_O_PUR) |= SPIClock;		
 	
 	// Wait for the SSI0 to be ready  CHECK
 	while ((HWREG(SYSCTL_RCGCSSI)& SYSCTL_RCGCSSI_R0)!= SYSCTL_RCGCSSI_R0);			
@@ -309,8 +316,9 @@ static void InitSerialHardware(void)
 	// Configure the clock pre-scaler
 	HWREG(SSI0_BASE + SSI_O_CPSR) = CPSDVSR;
 	
-	// Configure clock rate (SCR) by clearing with a mask and then shifting SCR two nibbles (FIX: set SCR)
+	// Configure clock rate (SCR) by clearing with a mask and then shifting SCR two nibbles
 	HWREG(SSI0_BASE + SSI_O_CR0) = (HWREG(SSI0_BASE + SSI_O_CR0) & 0xffff00ff)+(SCR<<(2*BitsPerNibble));	
+	//HWREG(SSI0_BASE + SSI_O_CR0) |= (SCR<<(2*BitsPerNibble));	
 	
 	// Configure phase & polarity (SPH, SPO), data size (DSS)
 	HWREG(SSI0_BASE + SSI_O_CR0) |= (SSI_CR0_SPH |SSI_CR0_SPO|SSI_CR0_DSS_8);		
@@ -337,11 +345,14 @@ static void InitSerialHardware(void)
 #ifdef TEST
 int main(void)
 {
+	SysCtlClockSet(SYSCTL_SYSDIV_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN
+			| SYSCTL_XTAL_16MHZ);
 	TERMIO_Init();
 	clrScrn();
 	printf("\r\n Starting SPI Test \r\n");
 	
 	InitSerialHardware();
+	QuerySPI();
 	
 	return 0;
 }

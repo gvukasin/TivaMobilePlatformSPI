@@ -433,11 +433,6 @@
               <FilePath>.\Source\ES_ShortTimer.c</FilePath>
             </File>
             <File>
-              <FileName>SPI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\SPI.c</FilePath>
-            </File>
-            <File>
               <FileName>ADMulti.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ADMulti.c</FilePath>
@@ -458,11 +453,6 @@
               <FilePath>.\Source\main.c</FilePath>
             </File>
             <File>
-              <FileName>MotorService.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\MotorService.c</FilePath>
-            </File>
-            <File>
               <FileName>PWMmodule.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\PWMmodule.c</FilePath>
@@ -471,6 +461,21 @@
               <FileName>TemplateService.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\TemplateService.c</FilePath>
+            </File>
+            <File>
+              <FileName>SPIService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\SPIService.c</FilePath>
+            </File>
+            <File>
+              <FileName>ActionService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ActionService.c</FilePath>
+            </File>
+            <File>
+              <FileName>MotorActionsModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\MotorActionsModule.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -583,11 +588,6 @@
               <FilePath>.\Headers\ES_ShortTimer.h</FilePath>
             </File>
             <File>
-              <FileName>SPI.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\SPI.h</FilePath>
-            </File>
-            <File>
               <FileName>ADMulti.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ADMulti.h</FilePath>
@@ -596,11 +596,6 @@
               <FileName>ADService.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ADService.h</FilePath>
-            </File>
-            <File>
-              <FileName>MotorService.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\MotorService.h</FilePath>
             </File>
             <File>
               <FileName>PWMmodule.h</FileName>
@@ -616,6 +611,21 @@
               <FileName>TemplateService.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\TemplateService.h</FilePath>
+            </File>
+            <File>
+              <FileName>SPIService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\SPIService.h</FilePath>
+            </File>
+            <File>
+              <FileName>ActionService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ActionService.h</FilePath>
+            </File>
+            <File>
+              <FileName>MotorActionsModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\MotorActionsModule.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1231,11 +1241,6 @@
               <FilePath>.\Source\ES_ShortTimer.c</FilePath>
             </File>
             <File>
-              <FileName>SPI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\SPI.c</FilePath>
-            </File>
-            <File>
               <FileName>ADMulti.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ADMulti.c</FilePath>
@@ -1342,54 +1347,6 @@
               </FileOption>
             </File>
             <File>
-              <FileName>MotorService.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\MotorService.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>PWMmodule.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\PWMmodule.c</FilePath>
@@ -1441,6 +1398,21 @@
               <FileName>TemplateService.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\TemplateService.c</FilePath>
+            </File>
+            <File>
+              <FileName>SPIService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\SPIService.c</FilePath>
+            </File>
+            <File>
+              <FileName>ActionService.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ActionService.c</FilePath>
+            </File>
+            <File>
+              <FileName>MotorActionsModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\MotorActionsModule.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1553,11 +1525,6 @@
               <FilePath>.\Headers\ES_ShortTimer.h</FilePath>
             </File>
             <File>
-              <FileName>SPI.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\SPI.h</FilePath>
-            </File>
-            <File>
               <FileName>ADMulti.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ADMulti.h</FilePath>
@@ -1566,11 +1533,6 @@
               <FileName>ADService.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\ADService.h</FilePath>
-            </File>
-            <File>
-              <FileName>MotorService.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\MotorService.h</FilePath>
             </File>
             <File>
               <FileName>PWMmodule.h</FileName>
@@ -1586,6 +1548,21 @@
               <FileName>TemplateService.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\TemplateService.h</FilePath>
+            </File>
+            <File>
+              <FileName>SPIService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\SPIService.h</FilePath>
+            </File>
+            <File>
+              <FileName>ActionService.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ActionService.h</FilePath>
+            </File>
+            <File>
+              <FileName>MotorActionsModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\MotorActionsModule.h</FilePath>
             </File>
           </Files>
         </Group>
