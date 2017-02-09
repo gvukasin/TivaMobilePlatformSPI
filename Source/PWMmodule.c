@@ -42,19 +42,14 @@
 #define GenA_Normal (PWM_0_GENA_ACTCMPAU_ONE | PWM_0_GENA_ACTCMPAD_ZERO )
 #define GenB_Normal (PWM_0_GENB_ACTCMPBU_ONE | PWM_0_GENB_ACTCMPBD_ZERO )
 
-//freq(Hz)	period(us)
-//50				20000  ---> for measuring motor time constant
-//2500			400		 ---> frequency for lab#7
-//200				5000
-//250				4000
-//500				2000
-//1000			1000
-//2000			500
-//10000			100
-
-#define PeriodInUS 1000 
+#define PeriodInUS 5000 
 #define PWMTicksPerUS 40000/(1000*32) //System clock (40MHz) / 32
 #define BitsPerNibble 4
+
+#define R_CW_MOTOR_PIN BIT4HI
+#define R_CCW_MOTOR_PIN BIT5HI
+#define L_CW_MOTOR_PIN BIT6HI
+#define L_CCW_MOTOR_PIN BIT7HI
 
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
@@ -73,10 +68,13 @@ void InitializePWM(void)
 {
 	// Enable the clock to the PWM Module (PWM0)
 	HWREG(SYSCTL_RCGCPWM) |= SYSCTL_RCGCPWM_R0;
+	
 	// Enable the clock to Port B
 	HWREG(SYSCTL_RCGCGPIO) |= SYSCTL_RCGCGPIO_R1;
+	
 	// Select the PWM clock as System Clock/32
 	HWREG(SYSCTL_RCC) = (HWREG(SYSCTL_RCC) & ~SYSCTL_RCC_PWMDIV_M) | (SYSCTL_RCC_USEPWMDIV | SYSCTL_RCC_PWMDIV_32);
+	
 	// Make sure that the PWM module clock has gotten going
 	while ((HWREG(SYSCTL_PRPWM) & SYSCTL_PRPWM_R0) != SYSCTL_PRPWM_R0);
 	
@@ -97,19 +95,19 @@ void InitializePWM(void)
 	// Enable the PWM outputs
 	HWREG( PWM0_BASE+PWM_O_ENABLE) |= (PWM_ENABLE_PWM1EN | PWM_ENABLE_PWM0EN);
 	
-	// Configure the Port B pins to be PWM outputs
-	HWREG(GPIO_PORTB_BASE+GPIO_O_AFSEL) |= (BIT7HI | BIT6HI);
+	// Configure the Port B pins 4,5,6,7 to be PWM outputs
+	HWREG(GPIO_PORTB_BASE+GPIO_O_AFSEL) |= (L_CCW_MOTOR_PIN | L_CW_MOTOR_PIN | R_CCW_MOTOR_PIN | R_CW_MOTOR_PIN);
 	HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) & 0x00ffffff) + (4<<(7*BitsPerNibble)) + (4<<(6*BitsPerNibble));
-	// Enable pins 6 & 7 on Port B for digital I/O
-	HWREG(GPIO_PORTB_BASE+GPIO_O_DEN) |= (BIT7HI | BIT6HI);
-	// make pins 6 & 7 on Port B into outputs
-	HWREG(GPIO_PORTB_BASE+GPIO_O_DIR) |= (BIT7HI |BIT6HI);
+	
+	// Enable pins 4,5,6,7 on Port B for digital I/O
+	HWREG(GPIO_PORTB_BASE+GPIO_O_DEN) |= (L_CCW_MOTOR_PIN | L_CW_MOTOR_PIN | R_CCW_MOTOR_PIN | R_CW_MOTOR_PIN);
+	
+	// make pins 4,5,6,7 on Port B into outputs
+	HWREG(GPIO_PORTB_BASE+GPIO_O_DIR) |= (L_CCW_MOTOR_PIN | L_CW_MOTOR_PIN | R_CCW_MOTOR_PIN | R_CW_MOTOR_PIN);
 	
 	// set the up/down count mode, enable the PWM generator and make
 	// both generator updates locally synchronized to zero count
 	HWREG(PWM0_BASE+ PWM_O_0_CTL) = (PWM_0_CTL_MODE | PWM_0_CTL_ENABLE | PWM_0_CTL_GENAUPD_LS | PWM_0_CTL_GENBUPD_LS);
-
-	//printf("\rLil' man finished PWM init\r\n");
 }
 
 void SetPWMDutyCycle(uint8_t DutyCycle)

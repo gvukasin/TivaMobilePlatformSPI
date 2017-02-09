@@ -12,6 +12,7 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 #include "MotorActionsModule.h"
+#include "PWMModule.h"
 
 #include <stdio.h>
 #include <termio.h>
@@ -41,17 +42,28 @@
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service*/
-void rotate(uint16_t dutyCycle, int angle, bool direction);
-void drive(uint16_t dutyCycle, int speed, bool direction);
-void stop(void);
+static void initializeMotors(void);
 
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
 
 
 /*------------------------------ Module Code ------------------------------*/
+void rotate(uint16_t dutyCycle, int angle, bool direction)
+{
+	InitializePWM();
+	SetPWMDutyCycle(dutyCycle);	
+}
+void drive(uint16_t dutyCycle, int speed, bool direction)
+{
+}
 
-
+void stop(void)
+{
+}
 /***************************************************************************
  private functions
  ***************************************************************************/
+static void initializeMotors(void)
+{
+}
