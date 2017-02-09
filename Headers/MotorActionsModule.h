@@ -15,7 +15,7 @@
 
 // Public Function Prototypes
 void start2rotate(bool rotationDirection);
-void drive(uint8_t DutyCycle, int speed, bool direction);
+void drive(uint8_t DutyCycle, bool direction);
 void stop(void);
 
 #endif /* MotorActionsModule_H */

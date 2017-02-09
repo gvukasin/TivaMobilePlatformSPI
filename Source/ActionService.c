@@ -12,12 +12,10 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 
-#include "ADService.h"
 #include "ActionService.h"
 #include "PWMmodule.h"
 #include "SPIService.h"
-
-#include "ADMulti.h"
+#include "MotorActionsModule.h"
 
 #include <stdio.h>
 #include <termio.h>
@@ -61,6 +59,11 @@
 
 #define FORWARD 1
 #define BACKWARD 0
+#define CW 1
+#define CCW 0
+
+#define DUTY_50 50
+#define DUTY_100 100
 
 // oneshot timeout length in ms
 #define OneShotTimeout 1000
@@ -170,52 +173,57 @@ ES_Event RunActionService(ES_Event ThisEvent)
 	{
 		//Case 1 
 		case STOP:
+			stop();
 			break;
 		
 		//Case 2
 		case CW_90:
+			start2rotate(CW);
 			break;
 		
 		//Case 3
 		case CW_45:
+			start2rotate(CW);
 			break;
 		
 		//Case 4
 		case CCW_90:
+			start2rotate(CCW);
 			break;
 		
 		//Case 5
 		case CCW_45:
+			start2rotate(CCW);
 			break;
 		
 		//Case 6
 		case FORWARD_HALF_SPEED:
+			drive(DUTY_50, FORWARD);
 			break;
 		
 		//Case 7
 		case FORWARD_FULL_SPEED:
+			drive(DUTY_100, FORWARD);
 			break;
 		
 		//Case 8
 		case REVERSE_HALF_SPEED:
+			drive(DUTY_50, BACKWARD);
 			break;
 		
 		//Case 9
-		case ALIGN_BEACON:
+		case REVERSE_FULL_SPEED:
+			drive(DUTY_100, BACKWARD);
 			break;
 		
 		//Case 10
-		case REVERSE_FULL_SPEED:
+		case ALIGN_BEACON:
 			break;
 		
 		//Case 11
 		case DRIVE2TAPE:
 			break;
 	}
-	
-	
-	
-	//Switch current command
 	
 	return ReturnEvent;
 }

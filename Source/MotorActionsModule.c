@@ -90,7 +90,7 @@ void start2rotate(bool rotationDirection)
 	}
 }
 
-void drive(uint8_t DutyCycle, int speed, bool direction)
+void drive(uint8_t DutyCycle, bool direction)
 {
 	// drive left motor at specified DutyCycle and direction
 	wheelSide = LEFT;
