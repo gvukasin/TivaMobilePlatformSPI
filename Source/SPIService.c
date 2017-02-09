@@ -201,31 +201,11 @@ void SPI_InterruptResponse( void )
 	printf("\rReceived data: %x", ReceivedData);
 	
 	// post command to action service
-	ISREvent.EventType = ReceivedData;
-	//PostActionService(ISREvent);
+	ISREvent.EventType = ISR_COMMAND;
+	ISREvent.EventParam = ReceivedData;
+	PostActionService(ISREvent);
 	
 	CurrentState=Idling;
-}
-
-/****************************************************************************
- Function
-     getCommand
-
- Parameters
-     void
-
- Returns
-     the current command
-
- Description
-
- Author
-     Team 16, 02/09/17, 23:00
-****************************************************************************/
-
-uint16_t getCommand(void)
-{
-	return ReceivedData;
 }
 
 /****************************************************************************

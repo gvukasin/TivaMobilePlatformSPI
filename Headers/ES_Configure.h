@@ -255,9 +255,9 @@ typedef enum {  ES_NO_EVENT = 0,
                 ES_TIMEOUT, /* signals that the timer has expired */
                 ES_SHORT_TIMEOUT, /* signals that a short timer has expired */
                 /* User-defined events start here */
+								ISR_COMMAND,
                 ES_NEW_KEY, /* signals a new key received from terminal */
-                ES_LOCK,
-                ES_UNLOCK} ES_EventTyp_t ;
+                } ES_EventTyp_t ;
 
 /****************************************************************************/
 // These are the definitions for the Distribution lists. Each definition
