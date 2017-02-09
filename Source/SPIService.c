@@ -209,6 +209,27 @@ void SPI_InterruptResponse( void )
 
 /****************************************************************************
  Function
+     getCommand
+
+ Parameters
+     void
+
+ Returns
+     the current command
+
+ Description
+
+ Author
+     Team 16, 02/09/17, 23:00
+****************************************************************************/
+
+uint16_t getCommand(void)
+{
+	return ReceivedData;
+}
+
+/****************************************************************************
+ Function
      QuerySPI
 
  Parameters

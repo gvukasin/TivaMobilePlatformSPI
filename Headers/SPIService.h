@@ -19,6 +19,7 @@ typedef enum {Idling,Busy} SPIState_t ;
 bool InitSPIService ( uint8_t );
 ES_Event RunSPIService( ES_Event );
 bool PostSPIService( ES_Event );
+uint16_t getCommand(void);
 
 
 #endif /* SPIService_H */
