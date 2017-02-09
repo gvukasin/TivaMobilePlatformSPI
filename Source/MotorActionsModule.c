@@ -104,7 +104,7 @@ void drive(uint8_t DutyCycle, int speed, bool direction)
 void stop(void)
 {
 	uint8_t DutyCycle = 0; // to stop motor
-	bool direction = FORWARD; // does not matter
+	direction = FORWARD; // does not matter
 	
 	// stop the left motor
 	wheelSide = LEFT;
