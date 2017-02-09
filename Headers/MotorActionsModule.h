@@ -14,8 +14,8 @@
 #include "ES_Events.h" 
 
 // Public Function Prototypes
-void rotate(uint16_t dutyCycle, int angle, bool direction);
-void drive(uint16_t dutyCycle, int speed, bool direction);
+void rotate(int angle, bool direction);
+void drive(uint8_t DutyCycle, int speed, bool direction);
 void stop(void);
 
 #endif /* MotorActionsModule_H */
