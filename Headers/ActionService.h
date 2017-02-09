@@ -21,5 +21,6 @@
 bool InitializeActionService(uint8_t Priority);
 bool PostActionService(ES_Event ThisEvent);
 ES_Event RunActionService(ES_Event ThisEvent);	
+void OneShotISR(void);
 
 #endif /* ActionService_H */
