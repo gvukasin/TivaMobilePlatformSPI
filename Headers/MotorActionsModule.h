@@ -14,7 +14,7 @@
 #include "ES_Events.h" 
 
 // Public Function Prototypes
-void rotate(int angle, bool direction);
+void start2rotate(bool rotationDirection);
 void drive(uint8_t DutyCycle, int speed, bool direction);
 void stop(void);
 

@@ -58,7 +58,7 @@ static bool wheelSide;
 static bool direction;
 
 /*------------------------------ Module Code ------------------------------*/
-void rotateStart(bool rotationDirection)
+void start2rotate(bool rotationDirection)
 {
 	// pick arbitrary DutyCycle, keep for testing
 	uint8_t DutyCycle = 100;
