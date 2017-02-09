@@ -1,7 +1,6 @@
 /****************************************************************************
  Module
    SPIService.c
-   SPI.c
 
  Revision
    1.0.1
@@ -118,8 +117,7 @@ bool InitSPIService ( uint8_t Priority )
 	 // Initialize hardware
 	 InitSerialHardware();
 
-	// return true
-	return true;
+	 return true;
 }
 
 /****************************************************************************
@@ -194,15 +192,13 @@ bool PostSPIService( ES_Event ThisEvent )
      Team 16, 02/04/17, 16:00
 ****************************************************************************/
 void SPI_InterruptResponse( void )
-{
-	
-	
+{	
 	// clear interrupt
 	HWREG(SSI0_BASE + SSI_O_IM) &= (~SSI_IM_TXIM);
 
 	// read command 
 	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
-
+	printf("\rReceived data: %04x", ReceivedData);
 	
 	// post command to action service
 	ISREvent.EventType = ReceivedData;
@@ -228,14 +224,15 @@ void SPI_InterruptResponse( void )
      Team 16, 02/04/17, 23:00
 ****************************************************************************/
 void QuerySPI( void )
-{
-	
+{	
 	// change state to busy 
 	CurrentState = Busy;
 	printf("\r\n In Query \r\n");
+	
 	//Enable the NVIC interrupt for the SSI
 	HWREG(SSI0_BASE + SSI_O_IM) |= SSI_IM_TXIM;
 	printf("\r\n Set interrupt \r\n");
+	
 	// write to data register
 	HWREG(SSI0_BASE+SSI_O_DR) = QueryBits;
 	//printf("\r\n Query: %x \r\n", QueryBits);
