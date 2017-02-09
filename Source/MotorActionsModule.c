@@ -38,6 +38,8 @@
 #include "BITDEFS.H"
 /*----------------------------- Module Defines ----------------------------*/
 #define ALL_BITS (0xff<<2)
+#define CW 1
+#define CCW 0
 
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
@@ -51,8 +53,11 @@ static void initializeMotors(void);
 /*------------------------------ Module Code ------------------------------*/
 void rotate(uint16_t dutyCycle, int angle, bool direction)
 {
-	InitializePWM();
-	SetPWMDutyCycle(dutyCycle);	
+	
+	if (direction == CW)
+	{
+			SetPWMDutyCycle(dutyCycle);	
+	}
 }
 void drive(uint16_t dutyCycle, int speed, bool direction)
 {

@@ -56,6 +56,9 @@
 #define ALIGN_BEACON 0x20 
 #define DRIVE2TAPE 0x40 
 
+#define FORWARD 1
+#define BACKWARD 0
+
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service*/

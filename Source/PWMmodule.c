@@ -79,25 +79,26 @@ void InitializePWM(void)
 	while ((HWREG(SYSCTL_PRPWM) & SYSCTL_PRPWM_R0) != SYSCTL_PRPWM_R0);
 	
 	// Disable the PWM while initializing
-	HWREG( PWM0_BASE+PWM_O_0_CTL ) = 0;
+	HWREG(PWM0_BASE+PWM_O_0_CTL) = 0;
+	HWREG(PWM1_BASE+PWM_O_0_CTL) = 0;
 	
 	// program generators to go to 1 at rising compare A/B, 0 on falling compare A/B
-	HWREG( PWM0_BASE+PWM_O_0_GENA) = GenA_Normal;
-	HWREG( PWM0_BASE+PWM_O_0_GENB) = GenB_Normal;
+	HWREG(PWM0_BASE + PWM_O_0_GENA) = GenA_Normal;
+	HWREG(PWM0_BASE + PWM_O_0_GENB) = GenB_Normal;
 	
 	// Set the PWM period
-	HWREG( PWM0_BASE+PWM_O_0_LOAD) = ((PeriodInUS * PWMTicksPerUS))>>1;
+	HWREG(PWM0_BASE + PWM_O_0_LOAD) = ((PeriodInUS * PWMTicksPerUS))>>1;
 	
 	// Set the initial Duty cycle on A and B to 0 
-	HWREG( PWM0_BASE+PWM_O_0_GENA) = PWM_0_GENA_ACTZERO_ZERO;
-	HWREG( PWM0_BASE+PWM_O_0_GENB) = PWM_0_GENB_ACTZERO_ZERO;
+	HWREG(PWM0_BASE + PWM_O_0_GENA) = PWM_0_GENA_ACTZERO_ZERO;
+	HWREG(PWM0_BASE + PWM_O_0_GENB) = PWM_0_GENB_ACTZERO_ZERO;
 	
-	// Enable the PWM outputs
-	HWREG( PWM0_BASE+PWM_O_ENABLE) |= (PWM_ENABLE_PWM1EN | PWM_ENABLE_PWM0EN);
-	
-	// Configure the Port B pins 4,5,6,7 to be PWM outputs
-	HWREG(GPIO_PORTB_BASE+GPIO_O_AFSEL) |= (L_CCW_MOTOR_PIN | L_CW_MOTOR_PIN | R_CCW_MOTOR_PIN | R_CW_MOTOR_PIN);
-	HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) & 0x00ffffff) + (4<<(7*BitsPerNibble)) + (4<<(6*BitsPerNibble));
+	// Enable the PWM outputs 0, 1, 2, 3
+	HWREG(PWM0_BASE + PWM_O_ENABLE) |= (PWM_ENABLE_PWM1EN | PWM_ENABLE_PWM0EN | PWM_ENABLE_PWM2EN | PWM_ENABLE_PWM3EN);
+
+	// Configure the Port B pins 4,5,6,7 to be PWM outputs -- alternate function
+	HWREG(GPIO_PORTB_BASE + GPIO_O_AFSEL) |= (L_CCW_MOTOR_PIN | L_CW_MOTOR_PIN | R_CCW_MOTOR_PIN | R_CW_MOTOR_PIN);
+	HWREG(GPIO_PORTB_BASE + GPIO_O_PCTL) = (HWREG(GPIO_PORTB_BASE+GPIO_O_PCTL) & 0x00ffffff) + (4<<(7*BitsPerNibble)) + (4<<(6*BitsPerNibble));
 	
 	// Enable pins 4,5,6,7 on Port B for digital I/O
 	HWREG(GPIO_PORTB_BASE+GPIO_O_DEN) |= (L_CCW_MOTOR_PIN | L_CW_MOTOR_PIN | R_CCW_MOTOR_PIN | R_CW_MOTOR_PIN);
@@ -110,7 +111,7 @@ void InitializePWM(void)
 	HWREG(PWM0_BASE+ PWM_O_0_CTL) = (PWM_0_CTL_MODE | PWM_0_CTL_ENABLE | PWM_0_CTL_GENAUPD_LS | PWM_0_CTL_GENBUPD_LS);
 }
 
-void SetPWMDutyCycle(uint8_t DutyCycle)
+void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 {
 	if (DutyCycle == 0)
 	{
@@ -123,7 +124,12 @@ void SetPWMDutyCycle(uint8_t DutyCycle)
 	else
 	{
 		RestoreDC();
-		HWREG( PWM0_BASE+PWM_O_0_CMPA) = (HWREG( PWM0_BASE+PWM_O_0_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
+		
+		if (direction == CW &
+		HWREG( PWM0_BASE + PWM_O_0_CMPA) = (HWREG( PWM0_BASE + PWM_O_0_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
+		HWREG( PWM0_BASE + PWM_O_1_CMPA) = (HWREG( PWM0_BASE + PWM_O_1_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
+		HWREG( PWM0_BASE + PWM_O_2_CMPA) = (HWREG( PWM0_BASE + PWM_O_2_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
+		HWREG( PWM0_BASE + PWM_O_3_CMPA) = (HWREG( PWM0_BASE + PWM_O_3_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
 	}
 }
 
