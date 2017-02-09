@@ -46,17 +46,23 @@
 #define PWMTicksPerUS 40000/(1000*32) //System clock (40MHz) / 32
 #define BitsPerNibble 4
 
-#define R_CW_MOTOR_PIN BIT4HI
-#define R_CCW_MOTOR_PIN BIT5HI
-#define L_CW_MOTOR_PIN BIT6HI
-#define L_CCW_MOTOR_PIN BIT7HI
+#define L_CCW_MOTOR_PIN BIT4HI
+#define L_CW_MOTOR_PIN BIT5HI
+#define R_CW_MOTOR_PIN BIT6HI
+#define R_CCW_MOTOR_PIN BIT7HI
+
+#define FORWARD 1
+#define BACKWARD 0
+
+#define LEFT 1
+#define RIGHT 0
 
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service*/
-static void Set100DC(void);
-static void Set0DC(void);
-static void RestoreDC(void);
+static void Set100DC(uint8_t SelectedPin);
+static void Set0DC(uint8_t SelectedPin);
+static void RestoreDC(uint8_t SelectedPin);
 
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
@@ -113,23 +119,109 @@ void InitializePWM(void)
 
 void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 {
-	if (DutyCycle == 0)
+	if (wheelSide == LEFT && direction == FORWARD)
 	{
-		Set0DC();
+		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
+		// Pass pin parameter to Set0DC, Set100DC, and RestoreDC to specify which pins to command (PB4, PB5, PB6, or PB7)
+		if (DutyCycle == 0)
+		{
+			Set0DC(L_CCW_MOTOR_PIN);
+			Set0DC(L_CW_MOTOR_PIN);
+		}
+		else if (DutyCycle == 100)
+		{
+			Set100DC(L_CCW_MOTOR_PIN);
+			Set0DC(L_CW_MOTOR_PIN);
+		}
+		else
+		{
+			RestoreDC(L_CCW_MOTOR_PIN);
+			RestoreDC(L_CW_MOTOR_PIN);
+			
+			// PB4 commands motor CCW
+			HWREG( PWM0_BASE + PWM_O_0_CMPA) = (HWREG( PWM0_BASE + PWM_O_0_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);
+			
+			// PB5 set to 0
+			Set0DC(L_CW_MOTOR_PIN);
+		}
 	}
-	else if (DutyCycle == 100)
+	
+	else if (wheelSide == LEFT && direction == BACKWARD)
 	{
-		Set100DC();
+		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
+		if (DutyCycle == 0)
+		{
+			Set0DC(L_CCW_MOTOR_PIN);
+			Set0DC(L_CW_MOTOR_PIN);
+		}
+		else if (DutyCycle == 100)
+		{
+			Set0DC(L_CCW_MOTOR_PIN);
+			Set100DC(L_CW_MOTOR_PIN);
+		}
+		else
+		{
+			RestoreDC(L_CCW_MOTOR_PIN);
+			RestoreDC(L_CW_MOTOR_PIN);
+			
+			// PB4 set to 0
+			Set0DC(L_CW_MOTOR_PIN);
+			
+			// PB5 commands motor CW
+			HWREG( PWM0_BASE + PWM_O_1_CMPA) = (HWREG( PWM0_BASE + PWM_O_1_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
+		}
 	}
-	else
+	
+	else if (wheelSide == RIGHT && direction == FORWARD)
 	{
-		RestoreDC();
-		
-		if (direction == CW &
-		HWREG( PWM0_BASE + PWM_O_0_CMPA) = (HWREG( PWM0_BASE + PWM_O_0_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
-		HWREG( PWM0_BASE + PWM_O_1_CMPA) = (HWREG( PWM0_BASE + PWM_O_1_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
-		HWREG( PWM0_BASE + PWM_O_2_CMPA) = (HWREG( PWM0_BASE + PWM_O_2_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
-		HWREG( PWM0_BASE + PWM_O_3_CMPA) = (HWREG( PWM0_BASE + PWM_O_3_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);	
+		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
+		if (DutyCycle == 0)
+		{
+			Set0DC(R_CW_MOTOR_PIN);
+			Set0DC(R_CCW_MOTOR_PIN);
+		}
+		else if (DutyCycle == 100)
+		{
+			Set100DC(R_CW_MOTOR_PIN);
+			Set0DC(R_CCW_MOTOR_PIN);
+		}
+		else
+		{
+			RestoreDC(R_CW_MOTOR_PIN);
+			RestoreDC(R_CCW_MOTOR_PIN);
+			
+			// PB6 commands motor CW
+			HWREG( PWM0_BASE + PWM_O_2_CMPA) = (HWREG( PWM0_BASE + PWM_O_2_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);
+			
+			// PB7 set to 0
+			Set0DC(R_CCW_MOTOR_PIN);
+		}
+	}
+	
+	else // right wheel selected, backward direction selected
+	{
+		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
+		if (DutyCycle == 0)
+		{
+			Set0DC(R_CW_MOTOR_PIN);
+			Set0DC(R_CCW_MOTOR_PIN);
+		}
+		else if (DutyCycle == 100)
+		{
+			Set0DC(R_CW_MOTOR_PIN);
+			Set100DC(R_CCW_MOTOR_PIN);
+		}
+		else
+		{
+			RestoreDC(R_CW_MOTOR_PIN);
+			RestoreDC(R_CCW_MOTOR_PIN);
+			
+			// PB6 set to 0
+			Set0DC(R_CW_MOTOR_PIN);
+			
+			// PB7 commands motor CCW
+			HWREG( PWM0_BASE + PWM_O_3_CMPA) = (HWREG( PWM0_BASE + PWM_O_3_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);
+		}
 	}
 }
 
@@ -147,17 +239,77 @@ uint16_t GetPWMPeriodUS(void)
 /***************************************************************************
  private functions
  ***************************************************************************/
-static void Set100DC(void){
+static void Set100DC(uint8_t SelectedPin){
 // Program 100% DC - set the action on Zero to set the output to one
 HWREG( PWM0_BASE+PWM_O_0_GENA) = PWM_0_GENA_ACTZERO_ONE;
+	
+	if (SelectedPin == L_CCW_MOTOR_PIN)
+	{
+		// PB4 to 100%
+	}
+	
+	else if (SelectedPin == L_CW_MOTOR_PIN)
+	{
+		// PB5 to 100%
+	}
+	
+	else if (SelectedPin == R_CW_MOTOR_PIN)
+	{
+		// PB6 to 100%
+	}
+	
+	else // PB7 selected
+	{
+		// PB7 to 100%
+	}
 }
 
-static void Set0DC(void){
+static void Set0DC(uint8_t SelectedPin){
 // Program 0% DC - set the action on Zero to set the output to zero
 HWREG( PWM0_BASE+PWM_O_0_GENA) = PWM_0_GENA_ACTZERO_ZERO;
+	
+	if (SelectedPin == L_CCW_MOTOR_PIN)
+	{
+		// PB4 to 0%
+	}
+	
+	else if (SelectedPin == L_CW_MOTOR_PIN)
+	{
+		// PB5 to 0%
+	}
+	
+	else if (SelectedPin == R_CW_MOTOR_PIN)
+	{
+		// PB6 to 0%
+	}
+	
+	else // PB7 selected
+	{
+		// PB7 to 0%
+	}
 }
 
-static void RestoreDC(void){
+static void RestoreDC(uint8_t SelectedPin){
 // Restore the previous DC - set the action back to the normal actions
 HWREG( PWM0_BASE+PWM_O_0_GENA) = GenA_Normal;
+	
+	if (SelectedPin == L_CCW_MOTOR_PIN)
+	{
+		// Restore PB4
+	}
+	
+	else if (SelectedPin == L_CW_MOTOR_PIN)
+	{
+		// Restore PB5
+	}
+	
+	else if (SelectedPin == R_CW_MOTOR_PIN)
+	{
+		// Restore PB6
+	}
+	
+	else // PB7 selected
+	{
+		// Restore PB7
+	}
 }

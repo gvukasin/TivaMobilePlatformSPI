@@ -14,7 +14,7 @@
 
 // Public Function Prototypes
 void InitializePWM(void);
-void SetPWMDutyCycle(uint8_t DutyCycle);
+void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide);
 void SetPWMPeriodUS(uint16_t Period);
 uint16_t GetPWMPeriodUS(void);
 
