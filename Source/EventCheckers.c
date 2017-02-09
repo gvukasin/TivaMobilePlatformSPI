@@ -113,7 +113,7 @@ bool Check4Keystroke(void)
     // test distribution list functionality by sending the 'L' key out via
     // a distribution list.
     if ( ThisEvent.EventParam == 'L'){
-     
+     PostSPIService(ThisEvent);
     }else{   // otherwise post to Service 0 for processing
    
     }
