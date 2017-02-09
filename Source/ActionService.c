@@ -15,6 +15,7 @@
 #include "ADService.h"
 #include "ActionService.h"
 #include "PWMmodule.h"
+#include "SPIService.h"
 
 #include "ADMulti.h"
 
@@ -66,8 +67,12 @@
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
-
 static uint8_t DutyCycle;
+
+static uint16_t CurrentCommand;
+
+//static ActionState_t CurrentState;
+//static ActionState_t NextState;
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
@@ -157,6 +162,36 @@ ES_Event RunActionService(ES_Event ThisEvent)
   ES_Event ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
 	
+//	NextState = CurrentState;
+	
+//	//State Machine
+//	switch(CurrentState)
+//	{
+//		//Case 1 
+//		case Stop:
+//			break;
+//		
+//		//Case 2
+//		case Rotate:
+//			break;
+//		
+//		//Case 3
+//		case Drive:
+//			break;
+//		
+//		//Case 4
+//		case Align:
+//			break;
+//		
+//		//Case 5
+//		case Drive2Tape:
+//			break;
+//	}
+	
+	//get command 
+	//CurrentCommand = getCommand();
+	
+	//Switch current command
 	
 	return ReturnEvent;
 }
