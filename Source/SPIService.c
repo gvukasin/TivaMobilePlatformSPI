@@ -198,7 +198,7 @@ void SPI_InterruptResponse( void )
 
 	// read command 
 	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
-	printf("\rReceived data: %04x", ReceivedData);
+	printf("\rReceived data: %x", ReceivedData);
 	
 	// post command to action service
 	ISREvent.EventType = ISR_COMMAND;
