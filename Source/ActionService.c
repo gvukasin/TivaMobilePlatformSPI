@@ -31,6 +31,7 @@
 #include "inc/hw_types.h"
 #include "inc/hw_gpio.h"
 #include "inc/hw_sysctl.h"
+#include "inc/hw_nvic.h"
 
 // the headers to access the TivaWare Library
 #include "driverlib/sysctl.h"
@@ -76,16 +77,12 @@ static void StartOneShot( void );
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
 static uint8_t DutyCycle;
-
-static uint16_t CurrentCommand;
-
-//static ActionState_t CurrentState;
-//static ActionState_t NextState;
+static uint32_t SpeedRPM;
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
  Function
-     InitializeMotor
+     InitializeActionService
 
  Parameters
      uint8_t : the priorty of this service
@@ -103,8 +100,6 @@ static uint16_t CurrentCommand;
 ****************************************************************************/
  bool InitializeActionService (uint8_t Priority)
  { 
-	//printf("\rLittle man in motor init\n");
-	
 	 //trying github
  	ES_Event ThisEvent;
  	MyPriority = Priority;
@@ -128,7 +123,7 @@ static uint16_t CurrentCommand;
 
 /****************************************************************************
  Function
-     PostMotor
+     PostActionService
 
  Parameters
      EF_Event ThisEvent ,the event to post to the queue
@@ -150,7 +145,7 @@ bool PostActionService(ES_Event ThisEvent)
 
 /****************************************************************************
  Function
-    RunMotor
+    RunActionService
 
  Parameters
    ES_Event : the event to process
@@ -160,7 +155,7 @@ bool PostActionService(ES_Event ThisEvent)
    ES_Event, ES_NO_EVENT if no error ES_ERROR otherwise
 
  Description
-   Sets PWM duty cycle 
+   Controls the necessary parameters to get the desired motion 
    
  Author
    Elena Galbally
@@ -241,7 +236,6 @@ ES_Event RunActionService(ES_Event ThisEvent)
  Description
 			Initialization for interrupt response for one shot timer to set
 			speed to 0
-
 			
  Notes
 
@@ -253,8 +247,7 @@ static void InitOneShotISR(){
 	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R0;
 
 	// kill a few cycles to let the clock get going
-	while((HWREG(SYSCTL_PRWTIMER) & SYSCTL_PRWTIMER_R0) != SYSCTL_PRWTIMER_R0)
-	{}
+	while((HWREG(SYSCTL_PRWTIMER) & SYSCTL_PRWTIMER_R0) != SYSCTL_PRWTIMER_R0){}
 
 	// make sure that timer (Timer A) is disabled before configuring
 	HWREG(WTIMER0_BASE+TIMER_O_CTL) &= ~TIMER_CTL_TBEN; //TAEN = Bit1
@@ -267,9 +260,7 @@ static void InitOneShotISR(){
 	// set up timer A in 1-shot mode so that it disables timer on timeouts
 	// first mask off the TAMR field (bits 0:1) then set the value for
 	// 1-shot mode = 0x01
-	HWREG(WTIMER0_BASE+TIMER_O_TBMR) =
-	(HWREG(WTIMER0_BASE+TIMER_O_TBMR)& ~TIMER_TBMR_TBMR_M)|
-	TIMER_TBMR_TBMR_1_SHOT;
+	HWREG(WTIMER0_BASE+TIMER_O_TBMR) = (HWREG(WTIMER0_BASE+TIMER_O_TBMR)& ~TIMER_TBMR_TBMR_M)| TIMER_TBMR_TBMR_1_SHOT;
 	
 	// set timeout
 	HWREG(WTIMER0_BASE+TIMER_O_TBILR) = TicksPerMS*OneShotTimeout;
@@ -290,7 +281,6 @@ static void InitOneShotISR(){
 	// now kick the timer off by enabling it and enabling the timer to
 	// stall while stopped by the debugger. TAEN = Bit0, TASTALL = bit1
 	HWREG(WTIMER0_BASE+TIMER_O_CTL) |= (TIMER_CTL_TBEN | TIMER_CTL_TBSTALL);
-
 }
 
 /****************************************************************************
@@ -313,8 +303,7 @@ static void InitOneShotISR(){
      Gabrielle Vukasin, 1/30/17, 20:00
 ****************************************************************************/ 
 static void StartOneShot( void ){
-// now kick the timer off by enabling it and enabling the timer to
-// stall while stopped by the debugger
+// now kick the timer off by enabling it and enabling the timer to stall while stopped by the debugger
 HWREG(WTIMER0_BASE+TIMER_O_CTL) |= (TIMER_CTL_TBEN | TIMER_CTL_TBSTALL);
 }
 
