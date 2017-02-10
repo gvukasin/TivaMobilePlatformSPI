@@ -115,6 +115,10 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>DLGUARM</Key>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>DLGTARM</Key>
           <Name>(1010=-1,-1,-1,-1,0)(1007=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(1009=-1,-1,-1,-1,0)(1012=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
@@ -138,6 +142,7 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
+<<<<<<< HEAD
           <LineNumber>299</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>1914</Address>
@@ -172,6 +177,10 @@
           <Type>0</Type>
           <LineNumber>228</LineNumber>
           <EnabledFlag>1</EnabledFlag>
+=======
+          <LineNumber>295</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+>>>>>>> 57ca96ba9cc8be884af17bee993e47dadb348c7e
           <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
@@ -184,6 +193,7 @@
           <Expression></Expression>
         </Bp>
         <Bp>
+<<<<<<< HEAD
           <Number>3</Number>
           <Type>0</Type>
           <LineNumber>229</LineNumber>
@@ -284,6 +294,12 @@
           <Type>0</Type>
           <LineNumber>235</LineNumber>
           <EnabledFlag>1</EnabledFlag>
+=======
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>299</LineNumber>
+          <EnabledFlag>0</EnabledFlag>
+>>>>>>> 57ca96ba9cc8be884af17bee993e47dadb348c7e
           <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
@@ -291,7 +307,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>.\Source\SPIService.c</Filename>
+          <Filename>.\Source\ES_Framework.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>

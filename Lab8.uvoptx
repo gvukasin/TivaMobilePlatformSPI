@@ -115,6 +115,10 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
+          <Key>DLGUARM</Key>
+        </SetRegEntry>
+        <SetRegEntry>
+          <Number>0</Number>
           <Key>DLGTARM</Key>
           <Name>(1010=-1,-1,-1,-1,0)(1007=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(1009=-1,-1,-1,-1,0)(1012=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
@@ -134,6 +138,9 @@
           <Name>UL2CM3(-O207 -S0 -C0 -FO7 -FD20000000 -FC800 -FN1 -FF0TM4C123_256 -FS00 -FL040000)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
+<<<<<<< HEAD
+      <Breakpoint/>
+=======
       <Breakpoint>
         <Bp>
           <Number>0</Number>
@@ -424,6 +431,7 @@
           <Expression></Expression>
         </Bp>
       </Breakpoint>
+>>>>>>> c7e7a031ac8e3e854250f196a13e9ea26d61ca45
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>
