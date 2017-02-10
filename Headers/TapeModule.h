@@ -14,6 +14,7 @@
 void InitTapeInterrupt (void);
 void TapeInterruptResponse(void);
 uint32_t GetTapeSensedTime(void);
+void EnableTapeInterrupt(void);
 
 // Module Function Prototypes
 

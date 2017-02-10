@@ -260,6 +260,7 @@ typedef enum {  ES_NO_EVENT = 0,
 								NEXT_COMMAND,
                 ES_NEW_KEY, /* signals a new key received from terminal */
 								TapeSensed,
+								IRBeaconSensed
                 } ES_EventTyp_t ;
 
 /****************************************************************************/

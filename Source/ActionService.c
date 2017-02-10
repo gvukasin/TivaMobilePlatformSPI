@@ -77,13 +77,18 @@
 
 #define lab8BeconFreqHz 1250
 
+#define BitsPerNibble 4
+#define numbNibblesShifted 6
+#define pinC6Mask 0xf0ffffff
+
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service*/
 static void InitOneShotISR();
 static void SetTimeoutAndStartOneShot( uint32_t);
 static void Look4Beacon(uint32_t);
-static void InitInputCapture();
+static void InitInputCaptureForIRDetection( void );
+
 
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
@@ -96,6 +101,10 @@ static uint32_t beaconFrequency;
 static uint32_t MeasuredSignalPeriod;
 static uint32_t LastCapture;
 static uint32_t ThisCapture;
+static uint32_t MeasuredSignalSpeedHz;
+static uint32_t DesiredFreqLOBoundary;
+static uint32_t DesiredFreqHIBoundary;
+
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
@@ -125,8 +134,14 @@ static uint32_t ThisCapture;
 	// Initialize PWM functionality
 	InitializePWM();
 	 
-	// Initialize Tape Sensor Interrupt
+	// Initialize Interrupts
 	InitTapeInterrupt();
+	InitInputCaptureForIRDetection();
+	InitOneShotISR();
+	 
+	//Initialize freq boundaries for IR beacon
+	DesiredFreqLOBoundary = beaconFrequency - 0.2*beaconFrequency;
+	DesiredFreqHIBoundary = beaconFrequency + 0.2*beaconFrequency;
 	 
 	// Initialize post to SPI service flag
 	post2SPIFlag = 1;
@@ -241,14 +256,14 @@ ES_Event RunActionService(ES_Event ThisEvent)
 		
 		//Case 10
 		case ALIGN_BEACON:
-			SetTimeoutAndStartOneShot(AlignWithBeaconTimeout);
+			EnableIRInterrupt();
 			Look4Beacon(lab8BeconFreqHz);
 			
 			break;
 		
 		//Case 11
 		case DRIVE2TAPE:
-			//StartTapeDectectionInterrupt();
+			EnableTapeInterrupt();
 			drive(DUTY_100, FORWARD);
 			break;
 		
@@ -293,6 +308,7 @@ ES_Event RunActionService(ES_Event ThisEvent)
 ****************************************************************************/
 static void Look4Beacon(uint32_t beaconFrequency)
 {
+	MeasuredSignalSpeedHz = (1000*TicksPerMS)/MeasuredSignalPeriod;
 	
 }
 
@@ -316,6 +332,7 @@ static void Look4Beacon(uint32_t beaconFrequency)
      Team 16 
 ****************************************************************************/
 static void InitOneShotISR(){
+	
 	// start by enabling the clock to the timer (Wide Timer 0)
 	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R0;
 
@@ -405,6 +422,7 @@ static void SetTimeoutAndStartOneShot( uint32_t OneShotTimeoutMS )
      Team 16 
 ****************************************************************************/ 
 void OneShotISR(void){
+	
 	// clear interrupt
 	HWREG(WTIMER0_BASE+TIMER_O_ICR) = TIMER_ICR_TBTOCINT; 
 	
@@ -428,7 +446,7 @@ void OneShotISR(void){
  Author
      Team 16 
 ****************************************************************************/
-static void InitInputCapture( void )
+static void InitInputCaptureForIRDetection( void )
 {
 	//Start by enabling the clock to the timer (Wide Timer 1)
 	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R1;
@@ -452,17 +470,17 @@ static void InitInputCapture( void )
 	//Set the event to rising edge
 	HWREG(WTIMER1_BASE + TIMER_O_CTL) &= ~TIMER_CTL_TAEVENT_M;
 	
-	//Set up the port to do the capture
-	HWREG(GPIO_PORTC_BASE + GPIO_O_AFSEL) |= BIT4HI;
+	//Set up the port to do the capture  -- we will use C6 because we are using wide timer 1A
+	HWREG(GPIO_PORTC_BASE + GPIO_O_AFSEL) |= BIT6HI;
 	
-	//map bit 4's alternate function to WT0CCP0
-	HWREG(GPIO_PORTC_BASE + GPIO_O_PCTL) = (HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL) & 0xfff0ffff) + (7<<16);
+	//map bit 4's alternate function to WT1CCP0
+	HWREG(GPIO_PORTC_BASE + GPIO_O_PCTL) = (HWREG(GPIO_PORTC_BASE + GPIO_O_PCTL) & pinC6Mask) + (7 << (BitsPerNibble*numbNibblesShifted));
 	
-	//Enable pin on Port C for digital I/O
-	HWREG(GPIO_PORTC_BASE + GPIO_O_DEN) |= BIT4HI;
+	//Enable pin 6 on Port C for digital I/O
+	HWREG(GPIO_PORTC_BASE + GPIO_O_DEN) |= BIT6HI;
 	
-	//make pin 4 on Port C into an input
-	HWREG(GPIO_PORTC_BASE + GPIO_O_DIR) &= BIT4LO;
+	//make pin 6 on Port C into an input
+	HWREG(GPIO_PORTC_BASE + GPIO_O_DIR) &= BIT6LO;
 	
 	//Enable a local capture interrupt
 	HWREG(WTIMER1_BASE + TIMER_O_IMR) |= TIMER_IMR_CAEIM;
@@ -473,13 +491,25 @@ static void InitInputCapture( void )
 	//Make sure interrupts are enabled globally
 	__enable_irq();
 	
-	//Kick timer off by enabling timer and enabling the timer to stall while stopped by the debugger
-	HWREG(WTIMER1_BASE + TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
 }
 
 /****************************************************************************
  Function
-     OneShotISR
+     EnableIRInterrupt
+
+ Description
+     Define the interrupt response routine
+****************************************************************************/
+void EnableIRInterrupt(void)
+{
+	//Kick timer off by enabling timer and enabling the timer to stall while stopped by the debugger
+	HWREG(WTIMER1_BASE + TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+}
+	
+
+/****************************************************************************
+ Function
+     InputCaptureISR
 
  Parameters
      void
@@ -494,7 +524,7 @@ static void InitInputCapture( void )
  Author
      Team 16 
 ****************************************************************************/ 
-void InputCaptureISR( void )  
+void InputCaptureISRForIRDetection( void )  
 {
 	//Clear the source of the interrupt, the input capture event
 	HWREG(WTIMER1_BASE + TIMER_O_ICR) = TIMER_ICR_CAECINT;
@@ -505,6 +535,25 @@ void InputCaptureISR( void )
 	
 	//Update LastCapture to prepare for the next edge
 	LastCapture = ThisCapture;
+	
+	//Check to see if we have found the beacon and if we have send a stop event
+	MeasuredSignalSpeedHz = (1000*TicksPerMS)/MeasuredSignalPeriod;
+	
+	if((MeasuredSignalSpeedHz > DesiredFreqLOBoundary) && (MeasuredSignalSpeedHz < DesiredFreqHIBoundary)) //Post STOP event to ActionService
+	{
+		ES_Event ThisEvent;
+		ThisEvent.EventType = IRBeaconSensed;
+		ThisEvent.EventParam = STOP;
+		PostActionService(ThisEvent);
+	}
+	else // keep looking for tape
+	{
+		ES_Event ThisEvent;
+		ThisEvent.EventType = IRBeaconSensed;
+		ThisEvent.EventParam = ALIGN_BEACON;
+		PostActionService(ThisEvent);
+	}
+
 }
 /*------------------------------- Footnotes -------------------------------*/
 /*------------------------------ End of file ------------------------------*/

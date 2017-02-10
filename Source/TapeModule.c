@@ -30,6 +30,7 @@ Events to post:
 #define ONE_SEC 976 //assume a 1.000mS/tick timing
 #define ALL_BITS (0xff<<2)
 
+#define STOP 0x00
 /*---------------------------- Module Variables ---------------------------*/
 static uint32_t LastCapture;
 
@@ -38,6 +39,7 @@ static uint32_t LastCapture;
 /****************************************************************************
  Function
      InitTapeInterrupt
+		 
  Description
      Initialize harware for wide timer 0 and enable interrupt on PC4
 ****************************************************************************/
@@ -58,8 +60,8 @@ void InitTapeInterrupt (void){
 	HWREG(WTIMER0_BASE+TIMER_O_TAILR) = 0xffffffff;
 	
 	//Set up Timer A in capture mode, for edge time, up-counting
-	HWREG(WTIMER0_BASE+TIMER_O_TAMR) = (HWREG(WTIMER0_BASE+TIMER_O_TAMR) & ~TIMER_TAMR_TAAMS)|
-																			(TIMER_TAMR_TACDIR | TIMER_TAMR_TACMR | TIMER_TAMR_TAMR_CAP);
+	HWREG(WTIMER0_BASE+TIMER_O_TAMR) = (HWREG(WTIMER0_BASE+TIMER_O_TAMR) & ~TIMER_TAMR_TAAMS)|(TIMER_TAMR_TACDIR | TIMER_TAMR_TACMR | TIMER_TAMR_TAMR_CAP);
+	
 	//Set event to rising edge
 	HWREG(WTIMER0_BASE+TIMER_O_CTL) &= ~TIMER_CTL_TAEVENT_M;
 	
@@ -80,29 +82,43 @@ void InitTapeInterrupt (void){
 	
 	//Enable interrupts globally
 	__enable_irq();
-	
-	//Kick the timer off and enable it to stall while stopped by the debugger
-	HWREG(WTIMER0_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+
 }
 
+/****************************************************************************
+ Function
+     EnableTapeInterrupt
+
+ Description
+     Define the interrupt response routine
+****************************************************************************/
+void EnableTapeInterrupt(void)
+{
+ //Kick the timer off and enable it to stall while stopped by the debugger
+	HWREG(WTIMER0_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+}
 
 /****************************************************************************
  Function
      TapeInterruptResponse
+
  Description
      Define the interrupt response routine
 ****************************************************************************/
 void TapeInterruptResponse(void){
+	
 	uint32_t ThisCapture;
+	
 	//Start by clearing out the source of the interrupt
 	HWREG(WTIMER0_BASE+TIMER_O_ICR) = TIMER_ICR_CAECINT;
+	
 	//Get the captured value 
 	ThisCapture = HWREG(WTIMER0_BASE+TIMER_O_TAR);
 	
 	//Post event to ActionService
 	ES_Event ThisEvent;
 	ThisEvent.EventType = TapeSensed;
-	ThisEvent.EventParam = ThisCapture;
+	ThisEvent.EventParam = STOP;
 	PostActionService(ThisEvent);
 	
 	LastCapture = ThisCapture;
