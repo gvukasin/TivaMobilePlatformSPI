@@ -423,11 +423,6 @@
               <FilePath>.\Source\EventCheckers.c</FilePath>
             </File>
             <File>
-              <FileName>TemplateFSM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\TemplateFSM.c</FilePath>
-            </File>
-            <File>
               <FileName>ES_ShortTimer.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ES_ShortTimer.c</FilePath>
@@ -1214,11 +1209,6 @@
               <FileName>EventCheckers.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\EventCheckers.c</FilePath>
-            </File>
-            <File>
-              <FileName>TemplateFSM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\TemplateFSM.c</FilePath>
             </File>
             <File>
               <FileName>ES_ShortTimer.c</FileName>

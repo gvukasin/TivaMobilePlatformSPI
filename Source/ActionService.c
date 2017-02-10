@@ -295,7 +295,8 @@ ES_Event RunActionService(ES_Event ThisEvent)
 	if (post2SPIFlag == 1)
 	{
 		ThisEvent.EventType = NEXT_COMMAND;
-		PostSPIService(ThisEvent);
+		// SEE ME
+		// PostSPIService(ThisEvent);
 	}
 	
 	return ReturnEvent;
