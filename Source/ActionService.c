@@ -84,6 +84,7 @@ static void StartOneShot( void );
 static uint8_t MyPriority;
 static uint8_t DutyCycle;
 static uint32_t SpeedRPM;
+static bool post2SPIFlag;
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
@@ -115,6 +116,9 @@ static uint32_t SpeedRPM;
 	 
 	// Initialize Tape Sensor Interrupt
 	InitTapeInterrupt();
+	 
+	// Initialize post to SPI service flag
+	post2SPIFlag = 1;
  
 	// post the initial transition event
  	ThisEvent.EventType = ES_INIT;
@@ -173,7 +177,6 @@ ES_Event RunActionService(ES_Event ThisEvent)
   ES_Event ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
 	
-	//State Machine
 	switch(ThisEvent.EventParam)
 	{
 		//Case 1 
@@ -228,6 +231,18 @@ ES_Event RunActionService(ES_Event ThisEvent)
 		//Case 11
 		case DRIVE2TAPE:
 			break;
+		
+		//Case 12
+		case END_RUN:
+			// stop motors and stop posting events
+		post2SPIFlag = 0;
+			break;
+	}
+	
+	// post to SPI service after each execution of Action Service to get the next command
+	// exception: after END_RUN is executed
+	if (post2SPIFlag == 1)
+	{
 	}
 	
 	return ReturnEvent;
