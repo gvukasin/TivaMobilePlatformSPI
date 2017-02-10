@@ -131,7 +131,7 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 {
 	if (wheelSide == LEFT && direction == FORWARD)
 	{
-		printf("\r\n-------control PB4");
+		//printf("\r\n-------control PB4");
 		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
 		// Pass pin parameter to Set0DC, Set100DC, and RestoreDC to specify which pins to command (PB4, PB5, PB6, or PB7)
 		if (DutyCycle == 0)
@@ -159,7 +159,7 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 	
 	else if (wheelSide == LEFT && direction == BACKWARD)
 	{
-		printf("\r\n-------control PB5");
+		//printf("\r\n-------control PB5");
 		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
 		if (DutyCycle == 0)
 		{
@@ -186,7 +186,7 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 	
 	else if (wheelSide == RIGHT && direction == FORWARD)
 	{
-		printf("\r\n-------control PB6");
+		//printf("\r\n-------control PB6");
 		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
 		if (DutyCycle == 0)
 		{
@@ -213,7 +213,7 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 	
 	else // right wheel selected, backward direction selected
 	{
-		printf("\r\n-------control PB7");
+		//printf("\r\n-------control PB7");
 		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
 		if (DutyCycle == 0)
 		{

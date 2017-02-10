@@ -92,7 +92,7 @@ void start2rotate(bool rotationDirection)
 void rotate2beacon(void)
 {
 	// pick arbitrary DutyCycle, keep for testing
-	uint8_t DutyCycle = 70;
+	uint8_t DutyCycle = 60;
 	
 	// pick the left wheel and rotate it forward to make robot spin CW
 	wheelSide = LEFT;

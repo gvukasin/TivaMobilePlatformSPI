@@ -91,6 +91,8 @@ static uint8_t ReceivedData;
 // ISR event
 static ES_Event ISREvent;
 
+static ES_Event LastEvent;
+
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
  Function
@@ -112,6 +114,7 @@ static ES_Event ISREvent;
 bool InitSPIService ( uint8_t Priority )
 {
 	 MyPriority = Priority;
+	 LastEvent.EventParam = 0x00;
 	 
 	 // Initialize hardware
 	 InitSerialHardware();
@@ -124,7 +127,6 @@ bool InitSPIService ( uint8_t Priority )
 	 ES_Event ThisEvent;
 	 ThisEvent.EventType = NEXT_COMMAND; 
 	 PostSPIService(ThisEvent);
-	 
 
 	 printf("\r\nGot through SPI init\r\n");
 	
@@ -150,7 +152,7 @@ bool InitSPIService ( uint8_t Priority )
 ****************************************************************************/
 ES_Event RunSPIService ( ES_Event ThisEvent )
 {
-	printf("\r\n Last Received data: %x \r\n", ReceivedData);
+	//printf("\r\n Last Received data: %x \r\n", ReceivedData);
 	
 	ES_Event ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
@@ -215,14 +217,14 @@ void SPI_InterruptResponse( void )
 	HWREG(SSI0_BASE + SSI_O_IM) &= (~SSI_IM_TXIM);
 
 	// read command 
-	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
+	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);	
 	
 	// post command to action service
 	ISREvent.EventType = ISR_COMMAND;
 	ISREvent.EventParam = ReceivedData;
 	PostActionService(ISREvent);
 	
-	CurrentState=Idling;
+	CurrentState = Idling;
 }
 
 /****************************************************************************

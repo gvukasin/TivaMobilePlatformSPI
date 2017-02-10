@@ -120,7 +120,7 @@ void TapeInterruptResponse(void){
 	//Post event to ActionService
 	ES_Event ThisEvent;
 	ThisEvent.EventType = TapeSensed;
-	ThisEvent.EventParam = STOP;
+	ThisEvent.EventParam = END_RUN;
 	PostActionService(ThisEvent);
 	
 	LastCapture = ThisCapture;

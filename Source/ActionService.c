@@ -74,12 +74,15 @@
 #define Rotate90Timeout 1050
 #define Rotate45Timeout 550
 #define AlignWithBeaconTimeout 5000
+#define Post2SPITimeout 100
 
 #define lab8BeaconFreqHz 1950
 
 #define BitsPerNibble 4
 #define numbNibblesShifted 6
 #define pinC6Mask 0xf0ffffff
+
+#define QueryBits 0xAA
 
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
@@ -89,11 +92,11 @@ static void SetTimeoutAndStartOneShot( uint32_t);
 static void Look4Beacon(uint32_t);
 static void InitInputCaptureForIRDetection( void );
 
-
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
-static bool post2SPIFlag;
+static bool post2SPIFlag = 1;
+static bool runActionSwitchFlag = 0;
 static uint32_t OneShotTimeoutMS;
 static uint32_t MeasuredSignalPeriod;
 static uint32_t LastCapture;
@@ -104,6 +107,8 @@ static uint32_t SpeedAddition;
 static uint32_t DesiredFreqLOBoundary;
 static uint32_t DesiredFreqHIBoundary;
 static uint8_t counter;
+static ES_Event LastEvent;
+static ES_Event SPIEvent;
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
@@ -148,11 +153,12 @@ static uint8_t counter;
 	 
 	// Initialize post to SPI service flag
 	post2SPIFlag = 1;
+	
+	// Initialize last event parameter to 0
+	LastEvent.EventParam = 0xff;
  
 	// post the initial transition event
  	// ThisEvent.EventType = ES_INIT;
-	
-	printf("\r\nLil' man finished initializing main service\n");
 	
 // 	if (ES_PostToService( MyPriority, ThisEvent) == true)
 // 	{
@@ -210,89 +216,99 @@ ES_Event RunActionService(ES_Event ThisEvent)
   ES_Event ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
 	
-	switch(ThisEvent.EventParam)
+	if (ThisEvent.EventParam == 0xff)
 	{
-		//Case 1 
-		case STOP:
-			printf("\r\n STOP Received\n");
-			stop();
-			break;
-		
-		//Case 2
-		case CW_90:
-			printf("\r\n CW_90 Received\n");
-			SetTimeoutAndStartOneShot(Rotate90Timeout);
-			start2rotate(CW);
-			break;
-		
-		//Case 3
-		case CW_45:
-			printf("\r\n CW_45 Received\n");
-			SetTimeoutAndStartOneShot(Rotate45Timeout);
-			start2rotate(CW);			
-			break;
-		
-		//Case 4
-		case CCW_90:
-			printf("\r\n CCW_90 Received\n");
-			SetTimeoutAndStartOneShot(Rotate90Timeout);
-			start2rotate(CCW);
-			break;
-		
-		//Case 5
-		case CCW_45:
-			printf("\r\n CCW_45 Received\n");
-			SetTimeoutAndStartOneShot(Rotate45Timeout);
-			start2rotate(CCW);
-			break;
-		
-		//Case 6
-		case FORWARD_HALF_SPEED:
-			printf("\r\n FORWARD_HALF_SPEED Received\n");
-			drive(DUTY_HALF_SPEED, FORWARD);
-			break;
-		
-		//Case 7
-		case FORWARD_FULL_SPEED:
-			printf("\r\n FORWARD_FULL_SPEED Received\n");
-			drive(DUTY_FULL_SPEED, FORWARD);
-			break;
-		
-		//Case 8
-		case REVERSE_HALF_SPEED:
-			printf("\r\n REVERSE_HALF_SPEED Received\n");
-			drive(DUTY_HALF_SPEED, BACKWARD);
-			break;
-		
-		//Case 9
-		case REVERSE_FULL_SPEED:
-			printf("\r\n REVERSE_FULL_SPEED Received\n");
-			drive(DUTY_FULL_SPEED, BACKWARD);
-			break;
-		
-		//Case 10
-		case ALIGN_BEACON:
-			printf("\r\n ALIGN_BEACON Received\n");
-			rotate2beacon();
-			EnableIRInterrupt();
-			printf("\r\nMeasured IR signal (Hz): %i\n", MeasuredSignalSpeedHz);
-			Look4Beacon(lab8BeaconFreqHz);
-			break;
-		
-		//Case 11
-		case DRIVE2TAPE:
-			printf("\r\n DRIVE2TAPE Received\n");
-			EnableTapeInterrupt();
-			drive(DUTY_FULL_SPEED, FORWARD);
-			break;
-		
-		//Case 12
-		case END_RUN:
-			printf("\r\n END_RUN Received\n");
-			// stop motors and stop posting events
-			post2SPIFlag = 0;
-			stop();
-			break;
+		runActionSwitchFlag = 1;
+	}
+	
+	if ((runActionSwitchFlag == 1) && (ThisEvent.EventParam != 0xff))
+	{
+		printf("\r\n %x \r\n", ThisEvent.EventParam);
+		runActionSwitchFlag = 0;
+		switch(ThisEvent.EventParam)
+		{
+			//Case 1 
+			case STOP:
+				//printf("\r\n STOP Received\n");
+				stop();
+				break;
+			
+			//Case 2
+			case CW_90:
+			//	printf("\r\n CW_90 Received\n");
+				SetTimeoutAndStartOneShot(Rotate90Timeout);
+				start2rotate(CW);
+				break;
+			
+			//Case 3
+			case CW_45:
+				//printf("\r\n CW_45 Received\n");
+				SetTimeoutAndStartOneShot(Rotate45Timeout);
+				start2rotate(CW);			
+				break;
+			
+			//Case 4
+			case CCW_90:
+				//printf("\r\n CCW_90 Received\n");
+				SetTimeoutAndStartOneShot(Rotate90Timeout);
+				start2rotate(CCW);
+				break;
+			
+			//Case 5
+			case CCW_45:
+				//printf("\r\n CCW_45 Received\n");
+				SetTimeoutAndStartOneShot(Rotate45Timeout);
+				start2rotate(CCW);
+				break;
+			
+			//Case 6
+			case FORWARD_HALF_SPEED:
+				//printf("\r\n FORWARD_HALF_SPEED Received\n");
+				drive(DUTY_HALF_SPEED, FORWARD);
+				break;
+			
+			//Case 7
+			case FORWARD_FULL_SPEED:
+				//printf("\r\n FORWARD_FULL_SPEED Received\n");
+				drive(DUTY_FULL_SPEED, FORWARD);
+				break;
+			
+			//Case 8
+			case REVERSE_HALF_SPEED:
+			//	printf("\r\n REVERSE_HALF_SPEED Received\n");
+				drive(DUTY_HALF_SPEED, BACKWARD);
+				break;
+			
+			//Case 9
+			case REVERSE_FULL_SPEED:
+				//printf("\r\n REVERSE_FULL_SPEED Received\n");
+				drive(DUTY_FULL_SPEED, BACKWARD);
+				break;
+			
+			//Case 10
+			case ALIGN_BEACON:
+				//printf("\r\n ALIGN_BEACON Received\n");
+				rotate2beacon();
+				EnableIRInterrupt();
+				//printf("\r\nMeasured IR signal (Hz): %i\n", MeasuredSignalSpeedHz);
+				Look4Beacon(lab8BeaconFreqHz);
+				break;
+			
+			//Case 11
+			case DRIVE2TAPE:
+				//printf("\r\n DRIVE2TAPE Received\n");
+				EnableTapeInterrupt();
+				drive(DUTY_FULL_SPEED, FORWARD);
+				break;
+			
+			//Case 12
+			case END_RUN:
+				//printf("\r\n END_RUN Received\n");
+				// stop motors and stop posting events
+				post2SPIFlag = 0;
+				stop();
+				break;
+		}
 	}
 	
 	// post to SPI service after each execution of Action Service to get the next command
