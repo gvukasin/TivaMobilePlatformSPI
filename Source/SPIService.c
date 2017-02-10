@@ -55,10 +55,10 @@
 #define SSI_NVIC_HI BIT7HI
 
 // CPSR divisor for SSI clock rate (2)
-#define CPSDVSR 0x02
+#define CPSDVSR 0x18
 
 // SCR divisor for SSI clock rate (24)
-#define SCR 0x18
+#define SCR 0x01
 
 // querry to Command Generator
 #define QueryBits 0xAA
@@ -139,16 +139,20 @@ bool InitSPIService ( uint8_t Priority )
 ****************************************************************************/
 ES_Event RunSPIService ( ES_Event ThisEvent )
 {
-	ThisEvent.EventType = ES_NO_EVENT;
-	// Idling State
-	if(CurrentState == Idling){
-		
-		// change state to Busy
-		CurrentState = Busy;
-		
-		// query the Command Generator
-		QuerySPI();
-	} 
+	printf("\r\n Last Received data: %x \r\n", ReceivedData);
+	
+	if(ThisEvent.EventType == NEXT_COMMAND)
+	{
+		// Idling State
+		if(CurrentState == Idling)
+		{		
+			// change state to Busy
+			CurrentState = Busy;
+			
+			// query the Command Generator
+			QuerySPI();
+		} 
+	}
 	return ThisEvent;
 }
 
@@ -198,12 +202,11 @@ void SPI_InterruptResponse( void )
 
 	// read command 
 	ReceivedData = HWREG(SSI0_BASE+SSI_O_DR);
-	printf("\rReceived data: %x", ReceivedData);
 	
 	// post command to action service
 	ISREvent.EventType = ISR_COMMAND;
 	ISREvent.EventParam = ReceivedData;
-	PostActionService(ISREvent);
+	//PostActionService(ISREvent);
 	
 	CurrentState=Idling;
 }
@@ -228,11 +231,11 @@ void QuerySPI( void )
 {	
 	// change state to busy 
 	CurrentState = Busy;
-	printf("\r\n In Query \r\n");
+	//printf("\r\n In Query \r\n");
 	
 	//Enable the NVIC interrupt for the SSI
 	HWREG(SSI0_BASE + SSI_O_IM) |= SSI_IM_TXIM;
-	printf("\r\n Set interrupt \r\n");
+	//printf("\r\n Set interrupt \r\n");
 	
 	// write to data register
 	HWREG(SSI0_BASE+SSI_O_DR) = QueryBits;

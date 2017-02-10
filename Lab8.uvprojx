@@ -467,6 +467,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\MotorActionsModule.c</FilePath>
             </File>
+            <File>
+              <FileName>TapeModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\TapeModule.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -606,6 +611,11 @@
               <FileName>MotorActionsModule.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\MotorActionsModule.h</FilePath>
+            </File>
+            <File>
+              <FileName>TapeModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\TapeModule.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1470,6 +1480,11 @@
                 </FileArmAds>
               </FileOption>
             </File>
+            <File>
+              <FileName>TapeModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\TapeModule.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1609,6 +1624,11 @@
               <FileName>MotorActionsModule.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\MotorActionsModule.h</FilePath>
+            </File>
+            <File>
+              <FileName>TapeModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\TapeModule.h</FilePath>
             </File>
           </Files>
         </Group>

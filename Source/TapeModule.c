@@ -1,17 +1,13 @@
 /****************************************************************************
-Things remian to be modified:
-Uncomment the POST statements
-
-
 Tape Module
 	Define the Initialization and ISR for the tape sensing interrupt
-	Whenever tape is detected, post event TapeDetected
+	Whenever tape is detected, post event TapeSensed
  
 Events to receive:
-
+  None
  
 Events to post:
-	TapeDetected
+	TapeSensed (to ActionService)
 ****************************************************************************/
 
 /*----------------------------- Include Files -----------------------------*/
@@ -26,6 +22,7 @@ Events to post:
 #include "inc/hw_timer.h"
 #include "inc/hw_nvic.h"
 
+#include "ActionService.h"
 #include "TapeModule.h"
 
 
@@ -34,7 +31,6 @@ Events to post:
 #define ALL_BITS (0xff<<2)
 
 /*---------------------------- Module Variables ---------------------------*/
-static uint8_t MyPriority;
 static uint32_t LastCapture;
 
 /*------------------------------ Module Code ------------------------------*/
@@ -103,10 +99,16 @@ void TapeInterruptResponse(void){
 	//Get the captured value 
 	ThisCapture = HWREG(WTIMER0_BASE+TIMER_O_TAR);
 	
-	//Post event to notify tape detected
-//	ES_Event ThisEvent;
-//	ThisEvent.EventType = TapeDetected;
-//	ThisEvent.EventParam = ThisCapture;
-//	Post(ThisEvent);
+	//Post event to ActionService
+	ES_Event ThisEvent;
+	ThisEvent.EventType = TapeSensed;
+	ThisEvent.EventParam = ThisCapture;
+	PostActionService(ThisEvent);
+	
+	LastCapture = ThisCapture;
+}
+
+uint32_t GetTapeSensedTime(void){
+	return LastCapture;
 }
 

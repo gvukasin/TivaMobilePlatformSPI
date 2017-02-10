@@ -433,59 +433,6 @@
               <FilePath>.\Source\ES_ShortTimer.c</FilePath>
             </File>
             <File>
-              <FileName>ADMulti.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\ADMulti.c</FilePath>
-            </File>
-            <File>
-              <FileName>ADService.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\ADService.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>ES_Queue.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ES_Queue.c</FilePath>
@@ -519,6 +466,11 @@
               <FileName>MotorActionsModule.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\MotorActionsModule.c</FilePath>
+            </File>
+            <File>
+              <FileName>TapeModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\TapeModule.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -631,16 +583,6 @@
               <FilePath>.\Headers\ES_ShortTimer.h</FilePath>
             </File>
             <File>
-              <FileName>ADMulti.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ADMulti.h</FilePath>
-            </File>
-            <File>
-              <FileName>ADService.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ADService.h</FilePath>
-            </File>
-            <File>
               <FileName>PWMmodule.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\PWMmodule.h</FilePath>
@@ -669,6 +611,11 @@
               <FileName>MotorActionsModule.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\MotorActionsModule.h</FilePath>
+            </File>
+            <File>
+              <FileName>TapeModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\TapeModule.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1284,59 +1231,6 @@
               <FilePath>.\Source\ES_ShortTimer.c</FilePath>
             </File>
             <File>
-              <FileName>ADMulti.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\ADMulti.c</FilePath>
-            </File>
-            <File>
-              <FileName>ADService.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Source\ADService.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>0</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>0</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>2</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <useXO>2</useXO>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
-            </File>
-            <File>
               <FileName>ES_Queue.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\ES_Queue.c</FilePath>
@@ -1586,6 +1480,11 @@
                 </FileArmAds>
               </FileOption>
             </File>
+            <File>
+              <FileName>TapeModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\TapeModule.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1697,16 +1596,6 @@
               <FilePath>.\Headers\ES_ShortTimer.h</FilePath>
             </File>
             <File>
-              <FileName>ADMulti.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ADMulti.h</FilePath>
-            </File>
-            <File>
-              <FileName>ADService.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Headers\ADService.h</FilePath>
-            </File>
-            <File>
               <FileName>PWMmodule.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\PWMmodule.h</FilePath>
@@ -1735,6 +1624,11 @@
               <FileName>MotorActionsModule.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\MotorActionsModule.h</FilePath>
+            </File>
+            <File>
+              <FileName>TapeModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\TapeModule.h</FilePath>
             </File>
           </Files>
         </Group>

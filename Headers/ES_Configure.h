@@ -30,7 +30,7 @@
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 1
+#define NUM_SERVICES 2
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service.
@@ -38,11 +38,11 @@
 // services are added in numeric sequence (1,2,3,...) with increasing 
 // priorities
 // the header file with the public function prototypes
-#define SERV_0_HEADER "SPIService.h"
+#define SERV_0_HEADER "ActionService.h"
 // the name of the Init function
-#define SERV_0_INIT InitSPIService
+#define SERV_0_INIT InitializeActionService
 // the name of the run function
-#define SERV_0_RUN RunSPIService
+#define SERV_0_RUN RunActionService
 // How big should this services Queue be?
 #define SERV_0_QUEUE_SIZE 5
 
@@ -54,11 +54,11 @@
 // These are the definitions for Service 1
 #if NUM_SERVICES > 1
 // the header file with the public function prototypes
-#define SERV_1_HEADER "TestHarnessService1.h"
+#define SERV_1_HEADER "SPIService.h"
 // the name of the Init function
-#define SERV_1_INIT InitTestHarnessService1
+#define SERV_1_INIT InitSPIService
 // the name of the run function
-#define SERV_1_RUN RunTestHarnessService1
+#define SERV_1_RUN RunSPIService
 // How big should this services Queue be?
 #define SERV_1_QUEUE_SIZE 3
 #endif
@@ -256,7 +256,10 @@ typedef enum {  ES_NO_EVENT = 0,
                 ES_SHORT_TIMEOUT, /* signals that a short timer has expired */
                 /* User-defined events start here */
 								ISR_COMMAND,
+								END_RUN,
+								NEXT_COMMAND,
                 ES_NEW_KEY, /* signals a new key received from terminal */
+								TapeSensed,
                 } ES_EventTyp_t ;
 
 /****************************************************************************/

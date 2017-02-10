@@ -141,12 +141,12 @@ ES_Event RunTemplateFSM( ES_Event ThisEvent )
     case UnlockWaiting :       // If current state is state one
       switch ( ThisEvent.EventType )
       {
-        case ES_LOCK : //If event is event one
+        //case ES_LOCK : //If event is event one
           
             // Execute action function for state one : event one
             CurrentState = Locked;//Decide what the next state will be
         
-          break;
+         // break;
 
         // repeat cases as required for relevant events
         default :
