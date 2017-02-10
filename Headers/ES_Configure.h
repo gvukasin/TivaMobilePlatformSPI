@@ -38,11 +38,11 @@
 // services are added in numeric sequence (1,2,3,...) with increasing 
 // priorities
 // the header file with the public function prototypes
-#define SERV_0_HEADER "SPIService.h"
+#define SERV_0_HEADER "ActionService.h"
 // the name of the Init function
-#define SERV_0_INIT InitSPIService
+#define SERV_0_INIT InitializeActionService
 // the name of the run function
-#define SERV_0_RUN RunSPIService
+#define SERV_0_RUN RunActionService
 // How big should this services Queue be?
 #define SERV_0_QUEUE_SIZE 5
 

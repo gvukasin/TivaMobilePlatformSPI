@@ -61,6 +61,8 @@
 #define BACKWARD 0
 #define CW 1
 #define CCW 0
+#define LEFT 1
+#define RIGHT 0
 
 #define DUTY_50 50
 #define DUTY_100 100
@@ -106,11 +108,10 @@ static uint32_t SpeedRPM;
 	 //trying github
  	ES_Event ThisEvent;
  	MyPriority = Priority;
-	 
+	  
 	// Initialize PWM functionality
 	InitializePWM();
-	SetPWMPeriodUS(GetPWMPeriodUS());
-	 
+ 
 	// post the initial transition event
  	ThisEvent.EventType = ES_INIT;
 	
