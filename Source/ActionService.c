@@ -301,7 +301,7 @@ ES_Event RunActionService(ES_Event ThisEvent)
 	{
 		ThisEvent.EventType = NEXT_COMMAND;
 		// SEE ME
-		// PostSPIService(ThisEvent);
+		PostSPIService(ThisEvent);
 	}
 	
 	return ReturnEvent;

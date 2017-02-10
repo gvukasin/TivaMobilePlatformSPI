@@ -120,11 +120,11 @@ bool InitSPIService ( uint8_t Priority )
 	 // SEE ME
 	
 	 // comment out for testing
-	 /*
+	 
 	 ES_Event ThisEvent;
 	 ThisEvent.EventType = NEXT_COMMAND; 
 	 PostSPIService(ThisEvent);
-	 */
+	 
 
 	 printf("\r\nGot through SPI init\r\n");
 	
