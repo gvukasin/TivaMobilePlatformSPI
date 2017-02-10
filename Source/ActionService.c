@@ -65,17 +65,17 @@
 #define LEFT 1
 #define RIGHT 0
 
-#define DUTY_50 50
-#define DUTY_100 100
+#define DUTY_HALF_SPEED 75
+#define DUTY_FULL_SPEED 100
 
 // using 40 MHz clock
 #define TicksPerMS 40000
 
-#define Rotate90Timeout 6000
-#define Rotate45Timeout 3000
+#define Rotate90Timeout 1050
+#define Rotate45Timeout 550
 #define AlignWithBeaconTimeout 5000
 
-#define lab8BeconFreqHz 1250
+#define lab8BeaconFreqHz 1950
 
 #define BitsPerNibble 4
 #define numbNibblesShifted 6
@@ -95,14 +95,15 @@ static void InitInputCaptureForIRDetection( void );
 static uint8_t MyPriority;
 static bool post2SPIFlag;
 static uint32_t OneShotTimeoutMS;
-static uint32_t beaconFrequency;
 static uint32_t MeasuredSignalPeriod;
 static uint32_t LastCapture;
 static uint32_t ThisCapture;
 static uint32_t MeasuredSignalSpeedHz;
+static uint32_t AveragedMeasuredSignalSpeedHz;
+static uint32_t SpeedAddition;
 static uint32_t DesiredFreqLOBoundary;
 static uint32_t DesiredFreqHIBoundary;
-
+static uint8_t counter;
 
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
@@ -137,9 +138,13 @@ static uint32_t DesiredFreqHIBoundary;
 	InitInputCaptureForIRDetection();
 	InitOneShotISR();
 	 
+	counter = 1;
+	AveragedMeasuredSignalSpeedHz = 0;
+	SpeedAddition = 0;
+	 
 	//Initialize freq boundaries for IR beacon
-	DesiredFreqLOBoundary = beaconFrequency - 0.2*beaconFrequency;
-	DesiredFreqHIBoundary = beaconFrequency + 0.2*beaconFrequency;
+	DesiredFreqLOBoundary = lab8BeaconFreqHz - 0.2*lab8BeaconFreqHz;
+	DesiredFreqHIBoundary = lab8BeaconFreqHz + 0.2*lab8BeaconFreqHz;
 	 
 	// Initialize post to SPI service flag
 	post2SPIFlag = 1;
@@ -244,41 +249,41 @@ ES_Event RunActionService(ES_Event ThisEvent)
 		//Case 6
 		case FORWARD_HALF_SPEED:
 			printf("\r\n FORWARD_HALF_SPEED Received\n");
-			drive(DUTY_50, FORWARD);
+			drive(DUTY_HALF_SPEED, FORWARD);
 			break;
 		
 		//Case 7
 		case FORWARD_FULL_SPEED:
 			printf("\r\n FORWARD_FULL_SPEED Received\n");
-			drive(DUTY_100, FORWARD);
+			drive(DUTY_FULL_SPEED, FORWARD);
 			break;
 		
 		//Case 8
 		case REVERSE_HALF_SPEED:
 			printf("\r\n REVERSE_HALF_SPEED Received\n");
-			drive(DUTY_50, BACKWARD);
+			drive(DUTY_HALF_SPEED, BACKWARD);
 			break;
 		
 		//Case 9
 		case REVERSE_FULL_SPEED:
 			printf("\r\n REVERSE_FULL_SPEED Received\n");
-			drive(DUTY_100, BACKWARD);
+			drive(DUTY_FULL_SPEED, BACKWARD);
 			break;
 		
 		//Case 10
 		case ALIGN_BEACON:
 			printf("\r\n ALIGN_BEACON Received\n");
+			rotate2beacon();
 			EnableIRInterrupt();
 			printf("\r\nMeasured IR signal (Hz): %i\n", MeasuredSignalSpeedHz);
-			Look4Beacon(lab8BeconFreqHz);
-			
+			Look4Beacon(lab8BeaconFreqHz);
 			break;
 		
 		//Case 11
 		case DRIVE2TAPE:
 			printf("\r\n DRIVE2TAPE Received\n");
 			EnableTapeInterrupt();
-			drive(DUTY_100, FORWARD);
+			drive(DUTY_FULL_SPEED, FORWARD);
 			break;
 		
 		//Case 12
@@ -325,7 +330,6 @@ ES_Event RunActionService(ES_Event ThisEvent)
 static void Look4Beacon(uint32_t beaconFrequency)
 {
 	MeasuredSignalSpeedHz = (1000*TicksPerMS)/MeasuredSignalPeriod;
-	
 }
 
 /****************************************************************************
@@ -559,24 +563,28 @@ void InputCaptureISRForIRDetection( void )
 	//Update LastCapture to prepare for the next edge
 	LastCapture = ThisCapture;
 	
-	//Check to see if we have found the beacon and if we have send a stop event
+	//Check to see if we have found the beacon and if we have sent a stop event
 	MeasuredSignalSpeedHz = (1000*TicksPerMS)/MeasuredSignalPeriod;
+	SpeedAddition += MeasuredSignalSpeedHz;
 	
-	if((MeasuredSignalSpeedHz > DesiredFreqLOBoundary) && (MeasuredSignalSpeedHz < DesiredFreqHIBoundary)) //Post STOP event to ActionService
+	if((counter>10) && (MeasuredSignalSpeedHz > DesiredFreqLOBoundary) && (MeasuredSignalSpeedHz < DesiredFreqHIBoundary)) //Post STOP event to ActionService
 	{
+		HWREG(WTIMER1_BASE + TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
 		ES_Event ThisEvent;
 		ThisEvent.EventType = IRBeaconSensed;
 		ThisEvent.EventParam = STOP;
 		PostActionService(ThisEvent);
 	}
-	else // keep looking for tape
+	else // keep looking for tape and update averaged measured signal speed
 	{
+		AveragedMeasuredSignalSpeedHz = SpeedAddition/counter;
+		SpeedAddition = 0;
 		ES_Event ThisEvent;
 		ThisEvent.EventType = IRBeaconSensed;
 		ThisEvent.EventParam = ALIGN_BEACON;
 		PostActionService(ThisEvent);
 	}
-
+		counter = counter + 1;
 }
 /*------------------------------- Footnotes -------------------------------*/
 /*------------------------------ End of file ------------------------------*/

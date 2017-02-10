@@ -15,6 +15,7 @@
 
 // Public Function Prototypes
 void start2rotate(bool rotationDirection);
+void rotate2beacon(void);
 void drive(uint8_t DutyCycle, bool direction);
 void stop(void);
 

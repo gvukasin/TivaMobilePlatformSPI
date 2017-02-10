@@ -108,6 +108,26 @@ bool Check4Keystroke(void)
 			CommandEvent.EventParam = STOP;
 			PostActionService(CommandEvent);
 		}
+		else if( ThisEvent.EventParam == 'F' ){
+			CommandEvent.EventParam = FORWARD_FULL_SPEED;
+			PostActionService(CommandEvent);
+		}
+		else if( ThisEvent.EventParam == 'f' ){
+			CommandEvent.EventParam = FORWARD_HALF_SPEED;
+			PostActionService(CommandEvent);
+		}
+		else if( ThisEvent.EventParam == 'B' ){
+			CommandEvent.EventParam = REVERSE_FULL_SPEED;
+			PostActionService(CommandEvent);
+		}
+		else if( ThisEvent.EventParam == 'b' ){
+			CommandEvent.EventParam = REVERSE_HALF_SPEED;
+			PostActionService(CommandEvent);
+		}
+		else if( ThisEvent.EventParam == 'a' ){
+			CommandEvent.EventParam = ALIGN_BEACON;
+			PostActionService(CommandEvent);
+		}
 		else if( ThisEvent.EventParam == 'd' ){
 			CommandEvent.EventParam = DRIVE2TAPE;
 			PostActionService(CommandEvent);
