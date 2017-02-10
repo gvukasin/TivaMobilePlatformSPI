@@ -38,6 +38,8 @@
 // actual functionsdefinition
 #include "EventCheckers.h"
 
+#include "SPIService.h"
+
 
 // This is the event checking function sample. It is not intended to be 
 // included in the module. It is only here as a sample to guide you in writing
