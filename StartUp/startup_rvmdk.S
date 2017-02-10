@@ -81,7 +81,7 @@ __heap_limit
         EXTERN  SysTickIntHandler
         EXTERN  ShortTimerAHandler
         EXTERN  ShortTimerBHandler
-	;	EXTERN  TapeInterruptResponse	
+		EXTERN  TapeInterruptResponse	
 ;        EXTERN  UARTStdioIntHandler
 		EXTERN	SPI_InterruptResponse
 
@@ -202,7 +202,7 @@ __Vectors
         DCD     0                           ; Reserved
         DCD     ShortTimerAHandler           ; Timer 5 subtimer A
         DCD     ShortTimerBHandler           ; Timer 5 subtimer B
-        DCD     IntDefaultHandler       ; Wide Timer 0 subtimer A
+        DCD     TapeInterruptResponse        ; Wide Timer 0 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 0 subtimer B
         DCD     IntDefaultHandler           ; Wide Timer 1 subtimer A
         DCD     IntDefaultHandler           ; Wide Timer 1 subtimer B

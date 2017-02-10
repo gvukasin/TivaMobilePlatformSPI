@@ -138,11 +138,13 @@
           <Name>UL2CM3(-O207 -S0 -C0 -FO7 -FD20000000 -FC800 -FN1 -FF0TM4C123_256 -FS00 -FL040000)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
+<<<<<<< HEAD
+      <Breakpoint/>
+=======
       <Breakpoint>
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-<<<<<<< HEAD
           <LineNumber>299</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>1914</Address>
@@ -177,10 +179,6 @@
           <Type>0</Type>
           <LineNumber>228</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-=======
-          <LineNumber>295</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
->>>>>>> 57ca96ba9cc8be884af17bee993e47dadb348c7e
           <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
@@ -193,7 +191,6 @@
           <Expression></Expression>
         </Bp>
         <Bp>
-<<<<<<< HEAD
           <Number>3</Number>
           <Type>0</Type>
           <LineNumber>229</LineNumber>
@@ -294,12 +291,6 @@
           <Type>0</Type>
           <LineNumber>235</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-=======
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>299</LineNumber>
-          <EnabledFlag>0</EnabledFlag>
->>>>>>> 57ca96ba9cc8be884af17bee993e47dadb348c7e
           <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
@@ -307,7 +298,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>.\Source\ES_Framework.c</Filename>
+          <Filename>.\Source\SPIService.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -440,6 +431,7 @@
           <Expression></Expression>
         </Bp>
       </Breakpoint>
+>>>>>>> c7e7a031ac8e3e854250f196a13e9ea26d61ca45
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>

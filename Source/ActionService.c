@@ -16,6 +16,7 @@
 #include "PWMmodule.h"
 #include "SPIService.h"
 #include "MotorActionsModule.h"
+#include "TapeModule.h"
 
 #include <stdio.h>
 #include <termio.h>
@@ -111,6 +112,9 @@ static uint32_t SpeedRPM;
 	  
 	// Initialize PWM functionality
 	InitializePWM();
+	 
+	// Initialize Tape Sensor Interrupt
+	InitTapeInterrupt();
  
 	// post the initial transition event
  	ThisEvent.EventType = ES_INIT;

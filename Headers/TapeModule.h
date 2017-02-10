@@ -13,6 +13,7 @@
 // Public Function Prototypes
 void InitTapeInterrupt (void);
 void TapeInterruptResponse(void);
+uint32_t GetTapeSensedTime(void);
 
 // Module Function Prototypes
 
