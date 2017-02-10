@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Outputs\BaseTarget.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Outputs\BaseTarget.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5040049: Last Updated: Thu Feb 09 12:44:45 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5040049: Last Updated: Thu Feb 09 16:34:08 2017
 <BR><P>
 <H3>Maximum Stack Usage =        144 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -243,8 +243,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_char_file
 </UL>
-<BR>[Called By]<UL><LI><a href="#[7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_InterruptResponse
-<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QuerySPI
+<BR>[Called By]<UL><LI><a href="#[e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunSPIService
 <LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InitSerialHardware
 <LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -513,29 +512,20 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Check4Keystroke
 </UL>
 
-<P><STRONG><a name="[4d]"></a>QuerySPI</STRONG> (Thumb, 36 bytes, Stack size 8 bytes, spiservice.o(i.QuerySPI))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136 + Unknown Stack Size
-<LI>Call Chain = QuerySPI &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
-</UL>
-<BR>[Calls]<UL><LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-</UL>
-<BR>[Called By]<UL><LI><a href="#[e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunSPIService
+<P><STRONG><a name="[4d]"></a>QuerySPI</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, spiservice.o(i.QuerySPI))
+<BR><BR>[Called By]<UL><LI><a href="#[e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RunSPIService
 </UL>
 
-<P><STRONG><a name="[e]"></a>RunSPIService</STRONG> (Thumb, 28 bytes, Stack size 8 bytes, spiservice.o(i.RunSPIService))
+<P><STRONG><a name="[e]"></a>RunSPIService</STRONG> (Thumb, 38 bytes, Stack size 16 bytes, spiservice.o(i.RunSPIService))
 <BR><BR>[Stack]<UL><LI>Max Depth = 144 + Unknown Stack Size
-<LI>Call Chain = RunSPIService &rArr; QuerySPI &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
+<LI>Call Chain = RunSPIService &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;QuerySPI
+<LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> es_framework.o(.constdata)
 </UL>
-<P><STRONG><a name="[7]"></a>SPI_InterruptResponse</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, spiservice.o(i.SPI_InterruptResponse))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136 + Unknown Stack Size
-<LI>Call Chain = SPI_InterruptResponse &rArr; __2printf &rArr; _printf_char_file &rArr; _printf_char_common &rArr; __printf
-</UL>
-<BR>[Calls]<UL><LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-</UL>
+<P><STRONG><a name="[7]"></a>SPI_InterruptResponse</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, spiservice.o(i.SPI_InterruptResponse))
 <BR>[Address Reference Count : 1]<UL><LI> startup_rvmdk.o(RESET)
 </UL>
 <P><STRONG><a name="[8]"></a>ShortTimerAHandler</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, es_shorttimer.o(i.ShortTimerAHandler))
@@ -615,8 +605,8 @@ Global Symbols
 <P><STRONG><a name="[58]"></a>UARTCharPut</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, uart.o(i.UARTCharPut))
 <BR><BR>[Calls]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTCharPut
 </UL>
-<BR>[Called By]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TERMIO_PutChar
-<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTCharPut
+<BR>[Called By]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UARTCharPut
+<LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TERMIO_PutChar
 </UL>
 
 <P><STRONG><a name="[55]"></a>UARTClockSourceSet</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, uart.o(i.UARTClockSourceSet))

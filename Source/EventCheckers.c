@@ -42,46 +42,6 @@
 // This is the event checking function sample. It is not intended to be 
 // included in the module. It is only here as a sample to guide you in writing
 // your own event checkers
-#if 0
-/****************************************************************************
- Function
-   Check4Lock
- Parameters
-   None
- Returns
-   bool: true if a new event was detected
- Description
-   Sample event checker grabbed from the simple lock state machine example
- Notes
-   will not compile, sample only
- Author
-   J. Edward Carryer, 08/06/13, 13:48
-****************************************************************************/
-bool Check4Lock(void)
-{
-  static uint8_t LastPinState = 0;
-  uint8_t CurrentPinState;
-  bool ReturnVal = false;
-  
-  CurrentPinState =  LOCK_PIN;
-  // check for pin high AND different from last time
-  // do the check for difference first so that you don't bother with a test
-  // of a port/variable that is not going to matter, since it hasn't changed
-  if ( (CurrentPinState != LastPinState) &&
-       (CurrentPinState == LOCK_PIN_HI) )
-  {                     // event detected, so post detected event
-    ES_Event ThisEvent;
-    ThisEvent.EventType = ES_LOCK;
-    ThisEvent.EventParam = 1;
-    // this could be any of the service post function, ES_PostListx or 
-    // ES_PostAll functions
-    ReturnVal = true;
-  }
-  LastPinState = CurrentPinState; // update the state for next time
-
-  return ReturnVal;
-}
-#endif
 
 /****************************************************************************
  Function

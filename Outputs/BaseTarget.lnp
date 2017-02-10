@@ -1,7 +1,6 @@
 --cpu Cortex-M4.fp
 ".\outputs\main.o"
 ".\outputs\eventcheckers.o"
-".\outputs\templatefsm.o"
 ".\outputs\es_shorttimer.o"
 ".\outputs\admulti.o"
 ".\outputs\es_queue.o"
@@ -9,7 +8,6 @@
 ".\outputs\pwmmodule.o"
 ".\outputs\templateservice.o"
 ".\outputs\spiservice.o"
-".\outputs\actionservice.o"
 ".\outputs\motoractionsmodule.o"
 "C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib"
 ".\outputs\startup_rvmdk.o"
