@@ -257,6 +257,7 @@ typedef enum {  ES_NO_EVENT = 0,
                 /* User-defined events start here */
 								ISR_COMMAND,
 								END_RUN,
+								NEXT_COMMAND,
                 ES_NEW_KEY, /* signals a new key received from terminal */
 								TapeSensed,
                 } ES_EventTyp_t ;

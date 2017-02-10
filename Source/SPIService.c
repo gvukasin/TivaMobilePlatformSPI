@@ -140,16 +140,19 @@ bool InitSPIService ( uint8_t Priority )
 ES_Event RunSPIService ( ES_Event ThisEvent )
 {
 	printf("\r\n Last Received data: %x \r\n", ReceivedData);
-	ThisEvent.EventType = ES_NO_EVENT;
-	// Idling State
-	if(CurrentState == Idling){
-		
-		// change state to Busy
-		CurrentState = Busy;
-		
-		// query the Command Generator
-		QuerySPI();
-	} 
+	
+	if(ThisEvent.EventType == NEXT_COMMAND)
+	{
+		// Idling State
+		if(CurrentState == Idling)
+		{		
+			// change state to Busy
+			CurrentState = Busy;
+			
+			// query the Command Generator
+			QuerySPI();
+		} 
+	}
 	return ThisEvent;
 }
 
