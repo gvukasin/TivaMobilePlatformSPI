@@ -430,51 +430,51 @@ void OneShotISR(void){
 ****************************************************************************/
 static void InitInputCapture( void )
 {
-	//Start by enabling the clock to the timer (Wide Timer 0)
-	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R0;
+	//Start by enabling the clock to the timer (Wide Timer 1)
+	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R1;
 	
 	//Enable the clock to Port C	
 	HWREG(SYSCTL_RCGCGPIO) |= SYSCTL_RCGCGPIO_R2;
 	
 	//Make sure that timer (Timer A) is disabled before configuring
-	HWREG(WTIMER0_BASE+TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
+	HWREG(WTIMER1_BASE + TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
 	
 	//Set it up in 32bit wide
-	HWREG(WTIMER0_BASE+TIMER_O_CFG) = TIMER_CFG_16_BIT;
+	HWREG(WTIMER1_BASE + TIMER_O_CFG) = TIMER_CFG_16_BIT;
 	
 	//Initialize the Interval Load register to 0xffff.ffff
-	HWREG(WTIMER0_BASE+TIMER_O_TAILR) = 0xffffffff;
+	HWREG(WTIMER1_BASE + TIMER_O_TAILR) = 0xffffffff;
 	
 	//Set up timer A in capture mode (TAMR=3, TAAMS = 0), for edge time (TACMR = 1) and up-counting (TACDIR = 1)
-	HWREG(WTIMER0_BASE+TIMER_O_TAMR) =
-	(HWREG(WTIMER0_BASE+TIMER_O_TAMR) & ~TIMER_TAMR_TAAMS) | (TIMER_TAMR_TACDIR | TIMER_TAMR_TACMR | TIMER_TAMR_TAMR_CAP);
+	HWREG(WTIMER1_BASE + TIMER_O_TAMR) =
+	(HWREG(WTIMER1_BASE + TIMER_O_TAMR) & ~TIMER_TAMR_TAAMS) | (TIMER_TAMR_TACDIR | TIMER_TAMR_TACMR | TIMER_TAMR_TAMR_CAP);
 	
 	//Set the event to rising edge
-	HWREG(WTIMER0_BASE+TIMER_O_CTL) &= ~TIMER_CTL_TAEVENT_M;
+	HWREG(WTIMER1_BASE + TIMER_O_CTL) &= ~TIMER_CTL_TAEVENT_M;
 	
 	//Set up the port to do the capture
-	HWREG(GPIO_PORTC_BASE+GPIO_O_AFSEL) |= BIT4HI;
+	HWREG(GPIO_PORTC_BASE + GPIO_O_AFSEL) |= BIT4HI;
 	
 	//map bit 4's alternate function to WT0CCP0
-	HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL) & 0xfff0ffff) + (7<<16);
+	HWREG(GPIO_PORTC_BASE + GPIO_O_PCTL) = (HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL) & 0xfff0ffff) + (7<<16);
 	
 	//Enable pin on Port C for digital I/O
-	HWREG(GPIO_PORTC_BASE+GPIO_O_DEN) |= BIT4HI;
+	HWREG(GPIO_PORTC_BASE + GPIO_O_DEN) |= BIT4HI;
 	
 	//make pin 4 on Port C into an input
-	HWREG(GPIO_PORTC_BASE+GPIO_O_DIR) &= BIT4LO;
+	HWREG(GPIO_PORTC_BASE + GPIO_O_DIR) &= BIT4LO;
 	
 	//Enable a local capture interrupt
-	HWREG(WTIMER0_BASE+TIMER_O_IMR) |= TIMER_IMR_CAEIM;
+	HWREG(WTIMER1_BASE + TIMER_O_IMR) |= TIMER_IMR_CAEIM;
 	
-	//Enable the Timer A in Wide Timer 0 interrupt in the NVIC
-	HWREG(NVIC_EN2) |= BIT30HI;
+	//Enable the Timer A in Wide Timer 1 interrupt in the NVIC (wide timer 1A <--> interrupt 96)
+	HWREG(NVIC_EN3) |= BIT0HI;
 	
 	//Make sure interrupts are enabled globally
 	__enable_irq();
 	
 	//Kick timer off by enabling timer and enabling the timer to stall while stopped by the debugger
-	HWREG(WTIMER0_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+	HWREG(WTIMER1_BASE + TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
 }
 
 /****************************************************************************
@@ -497,10 +497,10 @@ static void InitInputCapture( void )
 void InputCaptureISR( void )  
 {
 	//Clear the source of the interrupt, the input capture event
-	HWREG(WTIMER0_BASE+TIMER_O_ICR) = TIMER_ICR_CAECINT;
+	HWREG(WTIMER1_BASE + TIMER_O_ICR) = TIMER_ICR_CAECINT;
 	
 	//Grab the captured value and calculate the period
-	ThisCapture = HWREG(WTIMER0_BASE + TIMER_O_TAR);
+	ThisCapture = HWREG(WTIMER1_BASE + TIMER_O_TAR);
 	MeasuredSignalPeriod = ThisCapture - LastCapture;
 	
 	//Update LastCapture to prepare for the next edge
