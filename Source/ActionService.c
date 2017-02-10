@@ -590,11 +590,15 @@ void InputCaptureISRForIRDetection( void )
 	
 	if((counter>10) && (MeasuredSignalSpeedHz > DesiredFreqLOBoundary) && (MeasuredSignalSpeedHz < DesiredFreqHIBoundary)) //Post STOP event to ActionService
 	{
+		//Disable interrupt
 		HWREG(WTIMER1_BASE + TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
-		ES_Event ThisEvent;
-		ThisEvent.EventType = IRBeaconSensed;
-		ThisEvent.EventParam = STOP;
-		PostActionService(ThisEvent);
+		//Command to stop
+		stop();
+		
+//		ES_Event ThisEvent;
+//		ThisEvent.EventType = IRBeaconSensed;
+//		ThisEvent.EventParam = STOP;
+//		PostActionService(ThisEvent);
 	}
 	else // keep looking for tape and update averaged measured signal speed
 	{
