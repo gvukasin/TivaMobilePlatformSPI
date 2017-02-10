@@ -256,6 +256,7 @@ typedef enum {  ES_NO_EVENT = 0,
                 ES_SHORT_TIMEOUT, /* signals that a short timer has expired */
                 /* User-defined events start here */
 								ISR_COMMAND,
+								END_RUN,
                 ES_NEW_KEY, /* signals a new key received from terminal */
 								TapeSensed,
                 } ES_EventTyp_t ;
