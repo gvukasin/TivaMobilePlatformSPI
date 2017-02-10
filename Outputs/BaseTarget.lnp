@@ -3,7 +3,6 @@
 ".\outputs\eventcheckers.o"
 ".\outputs\templatefsm.o"
 ".\outputs\es_shorttimer.o"
-".\outputs\admulti.o"
 ".\outputs\es_queue.o"
 ".\outputs\main.o"
 ".\outputs\pwmmodule.o"
