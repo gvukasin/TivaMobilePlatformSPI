@@ -246,7 +246,7 @@ void SPI_InterruptResponse( void )
 void QuerySPI( void )
 {	
 	// change state to busy 
-	CurrentState = Busy;
+	//CurrentState = Busy;
 	//printf("\r\n In Query \r\n");
 	
 	//Enable the NVIC interrupt for the SSI

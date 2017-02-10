@@ -215,15 +215,20 @@ ES_Event RunActionService(ES_Event ThisEvent)
 {
   ES_Event ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
+	//printf("g %x",ThisEvent.EventParam);
+//	if(ThisEvent.EventParam == 170){
+//		getchar();
+//	}
 	
 	if (ThisEvent.EventParam == 0xff)
 	{
+		printf("FF");
 		runActionSwitchFlag = 1;
 	}
 	
 	if ((runActionSwitchFlag == 1) && (ThisEvent.EventParam != 0xff))
 	{
-		printf("\r\n %x \r\n", ThisEvent.EventParam);
+		printf("\r\n %x\r\n", ThisEvent.EventParam);
 		runActionSwitchFlag = 0;
 		switch(ThisEvent.EventParam)
 		{
