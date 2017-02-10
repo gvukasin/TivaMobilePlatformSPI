@@ -84,7 +84,7 @@
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service*/
-static void InitOneShotISR();
+static void InitOneShotISR(void);
 static void SetTimeoutAndStartOneShot( uint32_t);
 static void Look4Beacon(uint32_t);
 static void InitInputCaptureForIRDetection( void );
@@ -93,8 +93,6 @@ static void InitInputCaptureForIRDetection( void );
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
-static uint8_t DutyCycle;
-static uint32_t SpeedRPM;
 static bool post2SPIFlag;
 static uint32_t OneShotTimeoutMS;
 static uint32_t beaconFrequency;
@@ -128,7 +126,7 @@ static uint32_t DesiredFreqHIBoundary;
  bool InitializeActionService (uint8_t Priority)
  { 
 	 //trying github
- 	ES_Event ThisEvent;
+ 	// ES_Event ThisEvent;
  	MyPriority = Priority;
 	  
 	// Initialize PWM functionality
@@ -147,16 +145,20 @@ static uint32_t DesiredFreqHIBoundary;
 	post2SPIFlag = 1;
  
 	// post the initial transition event
- 	ThisEvent.EventType = ES_INIT;
+ 	// ThisEvent.EventType = ES_INIT;
 	
- 	if (ES_PostToService( MyPriority, ThisEvent) == true)
- 	{
- 		return true;
- 	}
-	else
- 	{
- 		return false;
- 	}
+	printf("\r\nLil' man finished initializing main service\n");
+	
+// 	if (ES_PostToService( MyPriority, ThisEvent) == true)
+// 	{
+// 		return true;
+// 	}
+//	else
+// 	{
+// 		return false;
+// 	}
+
+	return true;
  }
 
 /****************************************************************************
@@ -207,68 +209,81 @@ ES_Event RunActionService(ES_Event ThisEvent)
 	{
 		//Case 1 
 		case STOP:
+			printf("\r\n STOP Received\n");
 			stop();
 			break;
 		
 		//Case 2
 		case CW_90:
+			printf("\r\n CW_90 Received\n");
 			SetTimeoutAndStartOneShot(Rotate90Timeout);
 			start2rotate(CW);
 			break;
 		
 		//Case 3
 		case CW_45:
+			printf("\r\n CW_45 Received\n");
 			SetTimeoutAndStartOneShot(Rotate45Timeout);
 			start2rotate(CW);			
 			break;
 		
 		//Case 4
 		case CCW_90:
+			printf("\r\n CCW_90 Received\n");
 			SetTimeoutAndStartOneShot(Rotate90Timeout);
 			start2rotate(CCW);
 			break;
 		
 		//Case 5
 		case CCW_45:
+			printf("\r\n CCW_45 Received\n");
 			SetTimeoutAndStartOneShot(Rotate45Timeout);
 			start2rotate(CCW);
 			break;
 		
 		//Case 6
 		case FORWARD_HALF_SPEED:
+			printf("\r\n FORWARD_HALF_SPEED Received\n");
 			drive(DUTY_50, FORWARD);
 			break;
 		
 		//Case 7
 		case FORWARD_FULL_SPEED:
+			printf("\r\n FORWARD_FULL_SPEED Received\n");
 			drive(DUTY_100, FORWARD);
 			break;
 		
 		//Case 8
 		case REVERSE_HALF_SPEED:
+			printf("\r\n REVERSE_HALF_SPEED Received\n");
 			drive(DUTY_50, BACKWARD);
 			break;
 		
 		//Case 9
 		case REVERSE_FULL_SPEED:
+			printf("\r\n REVERSE_FULL_SPEED Received\n");
 			drive(DUTY_100, BACKWARD);
 			break;
 		
 		//Case 10
 		case ALIGN_BEACON:
+			printf("\r\n ALIGN_BEACON Received\n");
 			EnableIRInterrupt();
+			printf("\r\nMeasured IR signal (Hz): %i\n", MeasuredSignalSpeedHz);
 			Look4Beacon(lab8BeconFreqHz);
 			
 			break;
 		
 		//Case 11
 		case DRIVE2TAPE:
+			printf("\r\n DRIVE2TAPE Received\n");
 			EnableTapeInterrupt();
 			drive(DUTY_100, FORWARD);
 			break;
 		
 		//Case 12
 		case END_RUN:
+			printf("\r\n END_RUN Received\n");
 			// stop motors and stop posting events
 			post2SPIFlag = 0;
 			stop();
@@ -279,8 +294,8 @@ ES_Event RunActionService(ES_Event ThisEvent)
 	// exception: after END_RUN is executed
 	if (post2SPIFlag == 1)
 	{
-		ReturnEvent.EventType = NEXT_COMMAND;
-		PostSPIService(ReturnEvent);
+		ThisEvent.EventType = NEXT_COMMAND;
+		PostSPIService(ThisEvent);
 	}
 	
 	return ReturnEvent;
@@ -371,7 +386,12 @@ static void InitOneShotISR(){
 
 	// now kick the timer off by enabling it and enabling the timer to
 	// stall while stopped by the debugger. TAEN = Bit0, TASTALL = bit1
-	HWREG(WTIMER0_BASE+TIMER_O_CTL) |= (TIMER_CTL_TBEN | TIMER_CTL_TBSTALL);
+	
+	// do not kick off the one shot timer
+	// we do not want to stop the motors when we initialize the timer
+	// HWREG(WTIMER0_BASE+TIMER_O_CTL) |= (TIMER_CTL_TBEN | TIMER_CTL_TBSTALL);
+	
+		printf("\r\nGot through one shot interrupt init\r\n");
 }
 
 /****************************************************************************
@@ -490,6 +510,8 @@ static void InitInputCaptureForIRDetection( void )
 	
 	//Make sure interrupts are enabled globally
 	__enable_irq();
+	
+	printf("\r\nGot through IR interrupt init\r\n");
 	
 }
 

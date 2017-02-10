@@ -50,7 +50,6 @@
 /*---------------------------- Module Functions ---------------------------*/
 /* prototypes for private functions for this service.They should be functions
    relevant to the behavior of this service*/
-static void initializeMotors(void);
 
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
@@ -113,11 +112,9 @@ void stop(void)
 	// stop the right motor
 	wheelSide = RIGHT;
 	SetPWMDutyCycle(DutyCycle, direction, wheelSide);	
+	printf("\n\rAt the end of stop function\r\n");
 }
 /***************************************************************************
  private functions
  ***************************************************************************/
-static void initializeMotors(void)
-{
-	InitializePWM(); // anything else?
-}
+

@@ -86,7 +86,7 @@ static SPIState_t CurrentState;
 static uint8_t ReceivedData;
 
 // data to write to data register
-static uint8_t LastChunk;
+// static uint8_t LastChunk;
 
 // ISR event
 static ES_Event ISREvent;
@@ -111,12 +111,18 @@ static ES_Event ISREvent;
 ****************************************************************************/
 bool InitSPIService ( uint8_t Priority )
 {
-	 ES_Event ThisEvent;
 	 MyPriority = Priority;
 	 
 	 // Initialize hardware
 	 InitSerialHardware();
+	
+	 // move past initialization sequence
+	 ES_Event ThisEvent;
+	 ThisEvent.EventType = NEXT_COMMAND; 
+	 PostSPIService(ThisEvent);
 
+	 printf("\r\nGot through SPI init\r\n");
+	
 	 return true;
 }
 
@@ -141,6 +147,9 @@ ES_Event RunSPIService ( ES_Event ThisEvent )
 {
 	printf("\r\n Last Received data: %x \r\n", ReceivedData);
 	
+	ES_Event ReturnEvent;
+  ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
+	
 	if(ThisEvent.EventType == NEXT_COMMAND)
 	{
 		// Idling State
@@ -153,7 +162,7 @@ ES_Event RunSPIService ( ES_Event ThisEvent )
 			QuerySPI();
 		} 
 	}
-	return ThisEvent;
+	return ReturnEvent;
 }
 
 /****************************************************************************
@@ -206,7 +215,7 @@ void SPI_InterruptResponse( void )
 	// post command to action service
 	ISREvent.EventType = ISR_COMMAND;
 	ISREvent.EventParam = ReceivedData;
-	//PostActionService(ISREvent);
+	PostActionService(ISREvent);
 	
 	CurrentState=Idling;
 }
@@ -266,7 +275,7 @@ private functions
 ****************************************************************************/
 static void InitSerialHardware(void)
 {
-	printf("\r\n Starting init \r\n");
+
 	//Enable the clock to the GPIO port
 	HWREG(SYSCTL_RCGCGPIO)|= SYSCTL_RCGCGPIO_R0;		
 	
@@ -338,7 +347,7 @@ static void InitSerialHardware(void)
 	//Interrupt number -tiva DS pg.104
 	HWREG(NVIC_EN0) |= SSI_NVIC_HI;
 	
-	printf("Got thru init");
+	printf("\r\nGot thru SPI interrupt init\n");
 }
 
 

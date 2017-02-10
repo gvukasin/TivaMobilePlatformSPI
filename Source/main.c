@@ -48,16 +48,16 @@ int main(void)
 	//if we got to here, there was an error
 	switch (ErrorType){
 	  case FailedPost:
-	    printf("Failed on attempt to Post\n");
+	    printf("\r\nFailed on attempt to Post\n");
 	    break;
 	  case FailedPointer:
-	    printf("Failed on NULL pointer\n");
+	    printf("\r\nFailed on NULL pointer\n");
 	    break;
 	  case FailedInit:
-	    printf("Failed Initialization\n");
+	    printf("\r\nFailed Initialization\n");
 	    break;
 	 default:
-	    printf("Other Failure\n");
+	    printf("\r\nOther Failure\n");
 	    break;
 	}
 	for(;;)

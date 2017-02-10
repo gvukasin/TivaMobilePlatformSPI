@@ -44,6 +44,7 @@ static uint32_t LastCapture;
      Initialize harware for wide timer 0 and enable interrupt on PC4
 ****************************************************************************/
 void InitTapeInterrupt (void){
+	
 	//Enable the clock to Wider Timer 0
 	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R0;
 	
@@ -83,6 +84,7 @@ void InitTapeInterrupt (void){
 	//Enable interrupts globally
 	__enable_irq();
 
+		printf("\r\nGot through tape interrupt init\r\n");
 }
 
 /****************************************************************************
