@@ -113,7 +113,7 @@ void drive(uint8_t DutyCycle, bool direction)
 	
 	// drive right motor at specified DutyCycle and direction
 	wheelSide = RIGHT;
-	SetPWMDutyCycle(DutyCycle, direction, wheelSide);
+	SetPWMDutyCycle(DutyCycle - 5, direction, wheelSide);
 }
 
 void stop(void)

@@ -128,13 +128,8 @@ bool InitSPIService ( uint8_t Priority )
 	 
 	// Initialize shorttimer 
 	ES_Timer_InitTimer(SPI_TIMER,SPIPeriod);
-	
-//	// kick off querying the command generator
-//	 ES_Event ThisEvent;
-//	 ThisEvent.EventType = NEXT_COMMAND; 
-//	 PostSPIService(ThisEvent);
 
-	 printf("\r\nGot through SPI init\r\n");
+	printf("\r\nGot through SPI init\r\n");
 	
 	 return true;
 }
@@ -166,9 +161,7 @@ ES_Event RunSPIService ( ES_Event ThisEvent )
 	
 	//if(ThisEvent.EventType == NEXT_COMMAND)
 	if(ThisEvent.EventType == ES_TIMEOUT)
-	{
-		//printf("\r\n timeout \r\n");
-		
+	{		
 		// Initialize shorttimer 
 		ES_Timer_InitTimer(SPI_TIMER,SPIPeriod);
 		

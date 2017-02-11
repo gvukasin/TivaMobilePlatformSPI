@@ -58,6 +58,7 @@
 #define REVERSE_FULL_SPEED 0x11 
 #define ALIGN_BEACON 0x20 
 #define DRIVE2TAPE 0x40 
+#define READY4NEXTCOMMAND 0xff
 
 #define FORWARD 1
 #define BACKWARD 0
@@ -96,7 +97,6 @@ static void InitInputCaptureForIRDetection( void );
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
 static uint8_t MyPriority;
-static bool post2SPIFlag = 1;
 static bool runActionSwitchFlag = 0;
 static uint32_t OneShotTimeoutMS;
 static uint32_t MeasuredSignalPeriod;
@@ -143,7 +143,8 @@ static ES_Event SPIEvent;
 	InitTapeInterrupt();
 	InitInputCaptureForIRDetection();
 	InitOneShotISR();
-	 
+	
+  // Variables for IR beacon sensing	   --MOVE TO BEACON MODULE
 	counter = 1;
 	AveragedMeasuredSignalSpeedHz = 0;
 	SpeedAddition = 0;
@@ -151,9 +152,6 @@ static ES_Event SPIEvent;
 	//Initialize freq boundaries for IR beacon
 	DesiredFreqLOBoundary = lab8BeaconFreqHz - 0.2*lab8BeaconFreqHz;
 	DesiredFreqHIBoundary = lab8BeaconFreqHz + 0.2*lab8BeaconFreqHz;
-	 
-	// Initialize post to SPI service flag
-	post2SPIFlag = 1;
 	
 	// Initialize last event parameter to 0
 	LastEvent.EventParam = 0xff;
@@ -204,18 +202,14 @@ ES_Event RunActionService(ES_Event ThisEvent)
 {
   ES_Event ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-	//printf("g %x",ThisEvent.EventParam);
-//	if(ThisEvent.EventParam == 170){
-//		getchar();
-//	}
 	
-	if (ThisEvent.EventParam == 0xff)
+	if (ThisEvent.EventParam == READY4NEXTCOMMAND)
 	{
 		printf("FF");
 		runActionSwitchFlag = 1;
 	}
 	
-	if ((runActionSwitchFlag == 1) && (ThisEvent.EventParam != 0xff))
+	if ((runActionSwitchFlag == 1) && (ThisEvent.EventParam != READY4NEXTCOMMAND))
 	{
 		printf("\r\n %x\r\n", ThisEvent.EventParam);
 		runActionSwitchFlag = 0;
@@ -281,10 +275,8 @@ ES_Event RunActionService(ES_Event ThisEvent)
 			
 			//Case 10
 			case ALIGN_BEACON:
-				//printf("\r\n ALIGN_BEACON Received\n");
 				rotate2beacon();
 				EnableIRInterrupt();
-				//printf("\r\nMeasured IR signal (Hz): %i\n", MeasuredSignalSpeedHz);
 				Look4Beacon(lab8BeaconFreqHz);
 				break;
 			
@@ -299,7 +291,6 @@ ES_Event RunActionService(ES_Event ThisEvent)
 			case END_RUN:
 				//printf("\r\n END_RUN Received\n");
 				// stop motors and stop posting events
-				post2SPIFlag = 0;
 				stop();
 				break;
 		}
@@ -307,13 +298,6 @@ ES_Event RunActionService(ES_Event ThisEvent)
 	
 	// post to SPI service after each execution of Action Service to get the next command
 	// exception: after END_RUN is executed
-	if (post2SPIFlag == 1)
-	{
-		ThisEvent.EventType = NEXT_COMMAND;
-		// SEE ME
-		//PostSPIService(ThisEvent);
-	}
-	
 	return ReturnEvent;
 }
 
@@ -398,20 +382,13 @@ static void InitOneShotISR(){
 
 	// make sure interrupts are enabled globally
 	__enable_irq();
-
-	// now kick the timer off by enabling it and enabling the timer to
-	// stall while stopped by the debugger. TAEN = Bit0, TASTALL = bit1
 	
-	// do not kick off the one shot timer
-	// we do not want to stop the motors when we initialize the timer
-	// HWREG(WTIMER0_BASE+TIMER_O_CTL) |= (TIMER_CTL_TBEN | TIMER_CTL_TBSTALL);
-	
-		printf("\r\nGot through one shot interrupt init\r\n");
+	printf("\r\nGot through one shot interrupt init\r\n");
 }
 
 /****************************************************************************
  Function
-     StartOneShot
+     SetTimeoutAndStartOneShot
 
  Parameters
      void
@@ -561,7 +538,7 @@ void EnableIRInterrupt(void)
  Author
      Team 16 
 ****************************************************************************/ 
-void InputCaptureISRForIRDetection( void )  
+void InputCaptureForIRDetectionResponse( void )  
 {
 	//Clear the source of the interrupt, the input capture event
 	HWREG(WTIMER1_BASE + TIMER_O_ICR) = TIMER_ICR_CAECINT;

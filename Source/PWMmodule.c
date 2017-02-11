@@ -201,7 +201,6 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 		else
 		{
 			RestoreDC(R_CW_MOTOR_PIN);
-			//RestoreDC(R_CCW_MOTOR_PIN);
 			
 			// PB6 commands motor CW
 			HWREG( PWM0_BASE + PWM_O_0_CMPA) = (HWREG( PWM0_BASE + PWM_O_0_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);
