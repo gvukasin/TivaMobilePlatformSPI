@@ -17,6 +17,7 @@
 #include "SPIService.h"
 #include "MotorActionsModule.h"
 #include "TapeModule.h"
+#include "IRBeaconModule.h"
 
 #include <stdio.h>
 #include <termio.h>
@@ -131,7 +132,7 @@ static ES_Event SPIEvent;
 ****************************************************************************/
  bool InitializeActionService (uint8_t Priority)
  { 
-	 //trying github
+
  	// ES_Event ThisEvent;
  	MyPriority = Priority;
 	  
@@ -156,18 +157,6 @@ static ES_Event SPIEvent;
 	
 	// Initialize last event parameter to 0
 	LastEvent.EventParam = 0xff;
- 
-	// post the initial transition event
- 	// ThisEvent.EventType = ES_INIT;
-	
-// 	if (ES_PostToService( MyPriority, ThisEvent) == true)
-// 	{
-// 		return true;
-// 	}
-//	else
-// 	{
-// 		return false;
-// 	}
 
 	return true;
  }
