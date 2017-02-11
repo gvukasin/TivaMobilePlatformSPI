@@ -1,7 +1,7 @@
 /****************************************************************************
-Tape Module
-	Define the Initialization and ISR for the tape sensing interrupt
-	Whenever tape is detected, post event TapeSensed
+IRBeacon Module
+	Define the Initialization and ISR for the IR sensing interrupt
+	Whenever beacon is detected, post event BeaconSensed
  
 Events to receive:
   None
@@ -24,109 +24,167 @@ Events to post:
 
 #include "ActionService.h"
 #include "TapeModule.h"
+#include "MotorActionsModule.h"
 
 
 /*----------------------------- Module Defines ----------------------------*/
-#define ONE_SEC 976 //assume a 1.000mS/tick timing
 #define ALL_BITS (0xff<<2)
+#define TicksPerMS 40000
+#define lab8BeaconFreqHz 1950
+#define BitsPerNibble 4
+#define numbNibblesShifted 6
+#define pinC6Mask 0xf0ffffff
+#define ALIGN_BEACON 0x20 
 
 #define STOP 0x00
 /*---------------------------- Module Variables ---------------------------*/
 static uint32_t LastCapture;
 
+static uint32_t LastCapture;
+static uint32_t ThisCapture;
+static uint32_t MeasuredSignalSpeedHz;
+static uint32_t AveragedMeasuredSignalSpeedHz = 0;
+static uint32_t SpeedAddition = 0;
+static uint32_t DesiredFreqLOBoundary;
+static uint32_t DesiredFreqHIBoundary;
+static uint32_t MeasuredSignalPeriod;
+static uint8_t counter = 1;
+
+//Initialize freq boundaries for IR beacon
+static uint32_t	DesiredFreqLOBoundary = lab8BeaconFreqHz - 0.2*lab8BeaconFreqHz;
+static uint32_t	DesiredFreqHIBoundary = lab8BeaconFreqHz + 0.2*lab8BeaconFreqHz;
+
 /*------------------------------ Module Code ------------------------------*/
 
 /****************************************************************************
  Function
-     InitTapeInterrupt
-		 
+     InitInputCaptureForIRDetection
+
+ Parameters
+     void
+
+ Returns
+     void
+
  Description
-     Initialize harware for wide timer 0 and enable interrupt on PC4
+			Initialization for interrupt response for input capture
+
+ Author
+     Team 16 
 ****************************************************************************/
-void InitTapeInterrupt (void){
+static void InitInputCaptureForIRDetection( void )
+{
+	//Start by enabling the clock to the timer (Wide Timer 1)
+	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R1;
 	
-	//Enable the clock to Wider Timer 0
-	HWREG(SYSCTL_RCGCWTIMER) |= SYSCTL_RCGCWTIMER_R0;
-	
-	//Enable the clock to port C
+	//Enable the clock to Port C	
 	HWREG(SYSCTL_RCGCGPIO) |= SYSCTL_RCGCGPIO_R2;
 	
-	//Make sure Timer A is disabled before configuring
-	HWREG(WTIMER0_BASE+TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
+	//Make sure that timer (Timer A) is disabled before configuring
+	HWREG(WTIMER1_BASE + TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
 	
-	//Set it up to 32 bit wide, individual mode
-	HWREG(WTIMER0_BASE+TIMER_O_CFG) = TIMER_CFG_16_BIT;
+	//Set it up in 32bit wide
+	HWREG(WTIMER1_BASE + TIMER_O_CFG) = TIMER_CFG_16_BIT;
 	
-	//Initialize the Interval Load register to 0xFFFFFFFF
-	HWREG(WTIMER0_BASE+TIMER_O_TAILR) = 0xffffffff;
+	//Initialize the Interval Load register to 0xffff.ffff
+	HWREG(WTIMER1_BASE + TIMER_O_TAILR) = 0xffffffff;
 	
-	//Set up Timer A in capture mode, for edge time, up-counting
-	HWREG(WTIMER0_BASE+TIMER_O_TAMR) = (HWREG(WTIMER0_BASE+TIMER_O_TAMR) & ~TIMER_TAMR_TAAMS)|(TIMER_TAMR_TACDIR | TIMER_TAMR_TACMR | TIMER_TAMR_TAMR_CAP);
+	//Set up timer A in capture mode (TAMR=3, TAAMS = 0), for edge time (TACMR = 1) and up-counting (TACDIR = 1)
+	HWREG(WTIMER1_BASE + TIMER_O_TAMR) =
+	(HWREG(WTIMER1_BASE + TIMER_O_TAMR) & ~TIMER_TAMR_TAAMS) | (TIMER_TAMR_TACDIR | TIMER_TAMR_TACMR | TIMER_TAMR_TAMR_CAP);
 	
-	//Set event to rising edge
-	HWREG(WTIMER0_BASE+TIMER_O_CTL) &= ~TIMER_CTL_TAEVENT_M;
+	//Set the event to rising edge
+	HWREG(WTIMER1_BASE + TIMER_O_CTL) &= ~TIMER_CTL_TAEVENT_M;
 	
-	//Set up the port to do the capture
-	//Set the alternate function for PC4
-	HWREG(GPIO_PORTC_BASE+GPIO_O_AFSEL) |= BIT4HI;
-	//Map PC4's alternate function to WT0CCP0
-	HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL) = (HWREG(GPIO_PORTC_BASE+GPIO_O_PCTL) & 0xfff0ffff) + (7<<16);
-	//Enable PC4 to be digital input
-	HWREG(GPIO_PORTC_BASE+GPIO_O_DEN) |= BIT4HI;
-	HWREG(GPIO_PORTC_BASE+GPIO_O_DIR) &= BIT4LO;
+	//Set up the port to do the capture  -- we will use C6 because we are using wide timer 1A
+	HWREG(GPIO_PORTC_BASE + GPIO_O_AFSEL) |= BIT6HI;
+	
+	//map bit 4's alternate function to WT1CCP0
+	HWREG(GPIO_PORTC_BASE + GPIO_O_PCTL) = (HWREG(GPIO_PORTC_BASE + GPIO_O_PCTL) & pinC6Mask) + (7 << (BitsPerNibble*numbNibblesShifted));
+	
+	//Enable pin 6 on Port C for digital I/O
+	HWREG(GPIO_PORTC_BASE + GPIO_O_DEN) |= BIT6HI;
+	
+	//make pin 6 on Port C into an input
+	HWREG(GPIO_PORTC_BASE + GPIO_O_DIR) &= BIT6LO;
 	
 	//Enable a local capture interrupt
-	HWREG(WTIMER0_BASE+TIMER_O_IMR) |= TIMER_IMR_CAEIM;
+	HWREG(WTIMER1_BASE + TIMER_O_IMR) |= TIMER_IMR_CAEIM;
 	
-	//Enable Timer A in Wide Timer 0 interrupt in the NVIC
-	HWREG(NVIC_EN2) |= BIT30HI;
+	//Enable the Timer A in Wide Timer 1 interrupt in the NVIC (wide timer 1A <--> interrupt 96)
+	HWREG(NVIC_EN3) |= BIT0HI;
 	
-	//Enable interrupts globally
+	//Make sure interrupts are enabled globally
 	__enable_irq();
-
-		printf("\r\nGot through tape interrupt init\r\n");
+	
+	printf("\r\nGot through IR interrupt init\r\n");
+	
 }
 
 /****************************************************************************
  Function
-     EnableTapeInterrupt
+     EnableIRInterrupt
 
  Description
      Define the interrupt response routine
 ****************************************************************************/
-void EnableTapeInterrupt(void)
+void EnableIRInterrupt(void)
 {
- //Kick the timer off and enable it to stall while stopped by the debugger
-	HWREG(WTIMER0_BASE+TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
+	//Kick timer off by enabling timer and enabling the timer to stall while stopped by the debugger
+	HWREG(WTIMER1_BASE + TIMER_O_CTL) |= (TIMER_CTL_TAEN | TIMER_CTL_TASTALL);
 }
+	
 
 /****************************************************************************
  Function
-     TapeInterruptResponse
+     InputCaptureISR
+
+ Parameters
+     void
+
+ Returns
+     void
 
  Description
-     Define the interrupt response routine
-****************************************************************************/
-void TapeInterruptResponse(void){
+			Interrupt response for input capture --> 
+			will give us the period of the detected IR signal
+
+ Author
+     Team 16 
+****************************************************************************/ 
+void InputCaptureForIRDetectionResponse( void )  
+{
+	//Clear the source of the interrupt, the input capture event
+	HWREG(WTIMER1_BASE + TIMER_O_ICR) = TIMER_ICR_CAECINT;
 	
-	uint32_t ThisCapture;
+	//Grab the captured value 
+	ThisCapture = HWREG(WTIMER1_BASE + TIMER_O_TAR);
+	MeasuredSignalPeriod = ThisCapture - LastCapture;
 	
-	//Start by clearing out the source of the interrupt
-	HWREG(WTIMER0_BASE+TIMER_O_ICR) = TIMER_ICR_CAECINT;
-	
-	//Get the captured value 
-	ThisCapture = HWREG(WTIMER0_BASE+TIMER_O_TAR);
-	
-	//Post event to ActionService
-	ES_Event ThisEvent;
-	ThisEvent.EventType = TapeSensed;
-	ThisEvent.EventParam = END_RUN;
-	PostActionService(ThisEvent);
-	
+	//Update LastCapture to prepare for the next edge
 	LastCapture = ThisCapture;
+	
+	//Calculate measured signal speed 
+	//and keep count of the addition of the speeds to later calculate the average
+	MeasuredSignalSpeedHz = (1000*TicksPerMS)/MeasuredSignalPeriod;
+	SpeedAddition += MeasuredSignalSpeedHz;
+	
+	//Check to see if we have found the beacon and if we have sent a stop event
+	if((counter>10) && (MeasuredSignalSpeedHz > DesiredFreqLOBoundary) && (MeasuredSignalSpeedHz < DesiredFreqHIBoundary)) //Post STOP event to ActionService
+	{
+		//Disable interrupt
+		HWREG(WTIMER1_BASE + TIMER_O_CTL) &= ~TIMER_CTL_TAEN;
+		//Command to stop
+		stop();
+	}
+	else // keep looking for tape and update averaged measured signal speed
+	{
+		AveragedMeasuredSignalSpeedHz = SpeedAddition/counter;
+		SpeedAddition = 0;
+		ES_Event ThisEvent;
+		ThisEvent.EventType = IRBeaconSensed;
+		ThisEvent.EventParam = ALIGN_BEACON;
+		PostActionService(ThisEvent);
+	}
+	counter = counter + 1;
 }
-
-uint32_t GetTapeSensedTime(void){
-	return LastCapture;
-}
-

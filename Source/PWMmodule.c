@@ -131,9 +131,7 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 {
 	if (wheelSide == LEFT && direction == FORWARD)
 	{
-		//printf("\r\n-------control PB4");
-		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
-		// Pass pin parameter to Set0DC, Set100DC, and RestoreDC to specify which pins to command (PB4, PB5, PB6, or PB7)
+		
 		if (DutyCycle == 0)
 		{
 			Set0DC(L_CCW_MOTOR_PIN); //PB4 to 0
@@ -147,7 +145,6 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 		else
 		{
 			RestoreDC(L_CCW_MOTOR_PIN);
-			//RestoreDC(L_CW_MOTOR_PIN);
 			
 			// PB4 set to DutyCycle
 			HWREG( PWM0_BASE + PWM_O_1_CMPA) = (HWREG( PWM0_BASE + PWM_O_1_LOAD)) - ((DutyCycle*(PeriodInUS * PWMTicksPerUS)/100)>>1);
@@ -159,8 +156,6 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 	
 	else if (wheelSide == LEFT && direction == BACKWARD)
 	{
-		//printf("\r\n-------control PB5");
-		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
 		if (DutyCycle == 0)
 		{
 			Set0DC(L_CCW_MOTOR_PIN); //PB4 to 0
@@ -173,7 +168,6 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 		}
 		else
 		{
-			//RestoreDC(L_CCW_MOTOR_PIN);
 			RestoreDC(L_CW_MOTOR_PIN);
 			
 			// PB4 set to 0
@@ -186,8 +180,7 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 	
 	else if (wheelSide == RIGHT && direction == FORWARD)
 	{
-		//printf("\r\n-------control PB6");
-		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
+	
 		if (DutyCycle == 0)
 		{
 			Set0DC(R_CW_MOTOR_PIN); //PB6 to 0
@@ -212,8 +205,7 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 	
 	else // right wheel selected, backward direction selected
 	{
-		//printf("\r\n-------control PB7");
-		// Fix Set0DC, Set100DC, and RestoreDC functions to control each of the 4 pins separately
+	
 		if (DutyCycle == 0)
 		{
 			Set0DC(R_CW_MOTOR_PIN); //PB6 to 0
@@ -226,7 +218,6 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 		}
 		else
 		{
-			//RestoreDC(R_CW_MOTOR_PIN);
 			RestoreDC(R_CCW_MOTOR_PIN);
 			
 			// PB6 set to 0
@@ -240,8 +231,8 @@ void SetPWMDutyCycle(uint8_t DutyCycle, bool direction, bool wheelSide)
 
 void SetPWMPeriodUS(uint16_t Period)
 {
-		HWREG( PWM0_BASE+PWM_O_0_LOAD) = ((Period * PWMTicksPerUS))>>1;
-	  HWREG( PWM0_BASE+PWM_O_1_LOAD) = ((Period * PWMTicksPerUS))>>1;
+		HWREG( PWM0_BASE + PWM_O_0_LOAD) = ((Period * PWMTicksPerUS))>>1;
+	  HWREG( PWM0_BASE + PWM_O_1_LOAD) = ((Period * PWMTicksPerUS))>>1;
 }
 
 uint16_t GetPWMPeriodUS(void)
