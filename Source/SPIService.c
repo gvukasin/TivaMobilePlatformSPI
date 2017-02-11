@@ -63,6 +63,12 @@
 // querry to Command Generator
 #define QueryBits 0xAA
 
+// SPI period (baud rate)
+// these times assume a 1.000mS/tick timing
+#define TicksPerSec 976
+#define SPIPeriod (TicksPerSec/100)
+
+
 // defining ALL_BITS
 #define ALL_BITS (0xff<<2)
 
@@ -93,6 +99,7 @@ static ES_Event ISREvent;
 
 static ES_Event LastEvent;
 
+
 /*------------------------------ Module Code ------------------------------*/
 /****************************************************************************
  Function
@@ -119,9 +126,13 @@ bool InitSPIService ( uint8_t Priority )
 	 // Initialize hardware
 	 InitSerialHardware();
 	 
-	 ES_Event ThisEvent;
-	 ThisEvent.EventType = NEXT_COMMAND; 
-	 PostSPIService(ThisEvent);
+	// Initialize shorttimer 
+	ES_Timer_InitTimer(SPI_TIMER,SPIPeriod);
+	
+//	// kick off querying the command generator
+//	 ES_Event ThisEvent;
+//	 ThisEvent.EventType = NEXT_COMMAND; 
+//	 PostSPIService(ThisEvent);
 
 	 printf("\r\nGot through SPI init\r\n");
 	
@@ -151,9 +162,16 @@ ES_Event RunSPIService ( ES_Event ThisEvent )
 	
 	ES_Event ReturnEvent;
   ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
+	//printf("\r\n SPI Run \r\n");
 	
-	if(ThisEvent.EventType == NEXT_COMMAND)
+	//if(ThisEvent.EventType == NEXT_COMMAND)
+	if(ThisEvent.EventType == ES_TIMEOUT)
 	{
+		//printf("\r\n timeout \r\n");
+		
+		// Initialize shorttimer 
+		ES_Timer_InitTimer(SPI_TIMER,SPIPeriod);
+		
 		// Idling State
 		if(CurrentState == Idling)
 		{		
