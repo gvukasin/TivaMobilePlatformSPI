@@ -67,7 +67,7 @@
 #define LEFT 1
 #define RIGHT 0
 
-#define DUTY_HALF_SPEED 75
+#define DUTY_HALF_SPEED 75 //might need to be changed
 #define DUTY_FULL_SPEED 100
 
 // using 40 MHz clock
