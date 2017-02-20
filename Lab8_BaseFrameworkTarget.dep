@@ -296,6 +296,44 @@ I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_nvic.h)(0x589449D3)
 I (.\Headers\ActionService.h)(0x589E68FE)
 I (.\Headers\TapeModule.h)(0x589E68FE)
 I (.\Headers\MotorActionsModule.h)(0x589E68FE)
+F (.\Source\ADMulti.c)(0x546287E4)(-c --cpu Cortex-M4.fp -g -O2 --apcs=interwork --split_sections -IC:\ti\TivaWare_C_Series-2.1.0.12573 -I.\Headers --c99-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I Device\Include\TM4C123-Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o .\outputs\admulti.o --omf_browse .\outputs\admulti.crf --depend .\outputs\admulti.d)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5809860A)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_gpio.h)(0x541C60B6)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_types.h)(0x541C60B6)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_memmap.h)(0x541C60B6)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\tm4c123gh6pm.h)(0x541C60B6)
+I (.\Headers\ADMulti.h)(0x5462875B)
+F (.\Source\MagneticModule.c)(0x58AB6DBB)(-c --cpu Cortex-M4.fp -g -O2 --apcs=interwork --split_sections -IC:\ti\TivaWare_C_Series-2.1.0.12573 -I.\Headers --c99-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I Device\Include\TM4C123-Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o .\outputs\magneticmodule.o --omf_browse .\outputs\magneticmodule.crf --depend .\outputs\magneticmodule.d)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5346FF24)
+I (.\Headers\ES_Configure.h)(0x589E68FE)
+I (.\Headers\ES_Framework.h)(0x589E68FE)
+I (.\Headers\ES_Port.h)(0x589E68FE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5809860A)
+I (.\Headers\termio.h)(0x589E68FE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5346FF24)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\utils\uartstdio.h)(0x541C60B8)
+I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x5346FF24)
+I (.\Headers\bitdefs.h)(0x589E68FE)
+I (.\Headers\Bin_Const.h)(0x589E68FE)
+I (.\Headers\ES_Types.h)(0x589E68FE)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x5346FF24)
+I (.\Headers\ES_General.h)(0x589E68FE)
+I (.\Headers\ES_CheckEvents.h)(0x589E68FE)
+I (.\Headers\ES_PostList.h)(0x589E68FE)
+I (.\Headers\ES_Events.h)(0x589E68FE)
+I (.\Headers\ES_Timers.h)(0x589E68FE)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_types.h)(0x541C60B6)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_memmap.h)(0x541C60B6)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_gpio.h)(0x541C60B6)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_sysctl.h)(0x541C60B6)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\gpio.h)(0x58099809)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_timer.h)(0x5881BD05)
+I (C:\ti\TivaWare_C_Series-2.1.0.12573\inc\hw_nvic.h)(0x589449D3)
+I (.\Headers\ADMulti.h)(0x5462875B)
+I (.\Headers\ActionService.h)(0x589E68FE)
+I (.\Headers\TapeModule.h)(0x589E68FE)
+I (.\Headers\MotorActionsModule.h)(0x589E68FE)
+I (.\Headers\MagneticModule.h)(0x58AB67EF)
 F (.\Headers\uartstdio.h)(0x589E68FE)()
 F (.\Headers\Bin_Const.h)(0x589E68FE)()
 F (.\Headers\BITDEFS.H)(0x589E68FE)()
@@ -325,6 +363,8 @@ F (.\Headers\ActionService.h)(0x589E68FE)()
 F (.\Headers\MotorActionsModule.h)(0x589E68FE)()
 F (.\Headers\TapeModule.h)(0x589E68FE)()
 F (.\Headers\IRBeaconModule.h)(0x58AB5FD3)()
+F (.\Headers\ADMulti.h)(0x5462875B)()
+F (.\Headers\MagneticModule.h)(0x58AB67EF)()
 F (C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib)(0x541C60B5)()
 F (.\StartUp\startup_rvmdk.S)(0x58AB60E5)(--cpu Cortex-M4.fp -g --apcs=interwork -I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I Device\Include\TM4C123-o .\outputs\startup_rvmdk.o --depend .\outputs\startup_rvmdk.d)
 F (.\Source\ES_CheckEvents.c)(0x589E68FE)(-c --cpu Cortex-M4.fp -g -O2 --apcs=interwork --split_sections -IC:\ti\TivaWare_C_Series-2.1.0.12573 -I.\Headers --c99-I C:\Keil_v5\ARM\RV31\INC-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.1.0\CMSIS\Include-I Device\Include\TM4C123-Drvmdk -DPART_TM4C123GH6PM -DTARGET_IS_TM4C123_RB1-o .\outputs\es_checkevents.o --omf_browse .\outputs\es_checkevents.crf --depend .\outputs\es_checkevents.d)

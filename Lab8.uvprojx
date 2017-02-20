@@ -467,6 +467,16 @@
               <FileType>1</FileType>
               <FilePath>.\Source\IRBeaconModule.c</FilePath>
             </File>
+            <File>
+              <FileName>ADMulti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ADMulti.c</FilePath>
+            </File>
+            <File>
+              <FileName>MagneticModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\MagneticModule.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -616,6 +626,16 @@
               <FileName>IRBeaconModule.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\IRBeaconModule.h</FilePath>
+            </File>
+            <File>
+              <FileName>ADMulti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ADMulti.h</FilePath>
+            </File>
+            <File>
+              <FileName>MagneticModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\MagneticModule.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1437,6 +1457,16 @@
               <FileType>1</FileType>
               <FilePath>.\Source\IRBeaconModule.c</FilePath>
             </File>
+            <File>
+              <FileName>ADMulti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\ADMulti.c</FilePath>
+            </File>
+            <File>
+              <FileName>MagneticModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\MagneticModule.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1586,6 +1616,16 @@
               <FileName>IRBeaconModule.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Headers\IRBeaconModule.h</FilePath>
+            </File>
+            <File>
+              <FileName>ADMulti.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\ADMulti.h</FilePath>
+            </File>
+            <File>
+              <FileName>MagneticModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\MagneticModule.h</FilePath>
             </File>
           </Files>
         </Group>

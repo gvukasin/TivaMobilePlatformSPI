@@ -10,6 +10,8 @@
 ".\outputs\motoractionsmodule.o"
 ".\outputs\tapemodule.o"
 ".\outputs\irbeaconmodule.o"
+".\outputs\admulti.o"
+".\outputs\magneticmodule.o"
 "C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib"
 ".\outputs\startup_rvmdk.o"
 ".\outputs\es_checkevents.o"
