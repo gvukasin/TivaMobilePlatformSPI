@@ -462,6 +462,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\TapeModule.c</FilePath>
             </File>
+            <File>
+              <FileName>IRBeaconModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\IRBeaconModule.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -607,6 +612,11 @@
               <FileType>5</FileType>
               <FilePath>.\Headers\TapeModule.h</FilePath>
             </File>
+            <File>
+              <FileName>IRBeaconModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\IRBeaconModule.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -615,7 +625,7 @@
             <File>
               <FileName>driverlib.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>D:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib</FilePath>
+              <FilePath>C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -1422,6 +1432,11 @@
               <FileType>1</FileType>
               <FilePath>.\Source\TapeModule.c</FilePath>
             </File>
+            <File>
+              <FileName>IRBeaconModule.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\IRBeaconModule.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1567,6 +1582,11 @@
               <FileType>5</FileType>
               <FilePath>.\Headers\TapeModule.h</FilePath>
             </File>
+            <File>
+              <FileName>IRBeaconModule.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Headers\IRBeaconModule.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1575,7 +1595,7 @@
             <File>
               <FileName>driverlib.lib</FileName>
               <FileType>4</FileType>
-              <FilePath>D:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib</FilePath>
+              <FilePath>C:\ti\TivaWare_C_Series-2.1.0.12573\driverlib\rvmdk\driverlib.lib</FilePath>
             </File>
           </Files>
         </Group>
