@@ -1,9 +1,7 @@
 --cpu Cortex-M4.fp
-".\outputs\main.o"
 ".\outputs\eventcheckers.o"
 ".\outputs\es_shorttimer.o"
 ".\outputs\es_queue.o"
-".\outputs\main.o"
 ".\outputs\pwmmodule.o"
 ".\outputs\spiservice.o"
 ".\outputs\actionservice.o"

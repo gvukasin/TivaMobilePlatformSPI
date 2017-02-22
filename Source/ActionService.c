@@ -86,7 +86,7 @@
 static void InitOneShotISR(void);
 static void SetTimeoutAndStartOneShot( uint32_t);
 static void Look4Beacon(uint32_t);
-static void InitInputCaptureForIRDetection( void );
+//static void InitInputCaptureForIRDetection( void );
 
 /*---------------------------- Module Variables ---------------------------*/
 // with the introduction of Gen2, we need a module level Priority variable
@@ -126,7 +126,7 @@ static ES_Event SPIEvent;
 	 
 	// Initialize Interrupts
 	InitTapeInterrupt();
-	InitInputCaptureForIRDetection();
+	//InitInputCaptureForIRDetection();
 	InitOneShotISR();
 	
 	// Initialize last event parameter to 0
@@ -252,7 +252,7 @@ ES_Event RunActionService(ES_Event ThisEvent)
 			//Case 10
 			case ALIGN_BEACON:
 				rotate2beacon();
-				EnableIRInterrupt();
+				//EnableIRInterrupt();
 				break;
 			
 			//Case 11
